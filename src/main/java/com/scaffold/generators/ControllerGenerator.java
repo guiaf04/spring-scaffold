@@ -1,12 +1,23 @@
 package com.scaffold.generators;
 
+import com.scaffold.templates.TemplateEngine;
+import com.scaffold.utils.FileUtils;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Gerador de Controllers REST
  */
 @Slf4j
 public class ControllerGenerator {
+
+    private final TemplateEngine templateEngine;
+
+    public ControllerGenerator() {
+        this.templateEngine = new TemplateEngine();
+    }
 
     public boolean generate(
             String controllerName,
@@ -23,21 +34,50 @@ public class ControllerGenerator {
         try {
             log.info("Gerando controller {} no pacote {}", controllerName, packageName);
             
-            // TODO: Implementar geração usando templates Mustache
-            // Por enquanto, apenas log para demonstrar estrutura
+            // Preparar contexto para o template
+            Map<String, Object> context = new HashMap<>();
+            context.put("packageName", packageName);
+            context.put("controllerName", controllerName);
+            context.put("modelName", modelName);
+            context.put("modelPackage", modelPackage);
+            context.put("servicePackage", servicePackage);
+            context.put("basePath", basePath);
+            context.put("includeCrud", includeCrud);
+            context.put("includeSwagger", includeSwagger);
+            context.put("includeValidation", includeValidation);
+            
+            // Calcular nomes derivados
+            String serviceName = modelName + "Service";
+            String serviceInstanceName = Character.toLowerCase(serviceName.charAt(0)) + serviceName.substring(1);
+            String modelInstanceName = Character.toLowerCase(modelName.charAt(0)) + modelName.substring(1);
+            String resourcePath = modelInstanceName + "s"; // pluralizar
+            
+            context.put("serviceName", serviceName);
+            context.put("serviceInstanceName", serviceInstanceName);
+            context.put("modelInstanceName", modelInstanceName);
+            context.put("resourcePath", resourcePath);
             
             log.info("Configurações:");
             log.info("- Controller: {}", controllerName);
             log.info("- Pacote: {}", packageName);
             log.info("- Model: {}", modelName);
-            log.info("- Model Package: {}", modelPackage);
-            log.info("- Service Package: {}", servicePackage);
+            log.info("- Service: {}", serviceName);
+            log.info("- Resource Path: {}", resourcePath);
             log.info("- Base Path: {}", basePath);
-            log.info("- CRUD: {}", includeCrud);
-            log.info("- Swagger: {}", includeSwagger);
-            log.info("- Validação: {}", includeValidation);
             
-            // Simular sucesso por enquanto
+            // Gerar código usando template
+            String code = templateEngine.processTemplate("controller.java.mustache", context);
+            
+            // Criar estrutura de diretórios
+            String packagePath = packageName.replace(".", "/");
+            String fullPath = outputDirectory + "/src/main/java/" + packagePath;
+            FileUtils.createDirectories(fullPath);
+            
+            // Escrever arquivo
+            String fileName = fullPath + "/" + controllerName + ".java";
+            FileUtils.createFile(fileName, code);
+            
+            log.info("Controller {} gerado com sucesso em {}", controllerName, fileName);
             return true;
             
         } catch (Exception e) {

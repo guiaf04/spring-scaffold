@@ -1,14 +1,5 @@
 package {{packageName}};
 
-import {{modelPackage}}.{{modelName}};
-import {{servicePackage}}.{{serviceName}};
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-{{#includeValidation}}
-import jakarta.validation.Valid;
-{{/includeValidation}}
 {{#includeSwagger}}
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -16,6 +7,18 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 {{/includeSwagger}}
+{{#includeValidation}}
+import jakarta.validation.Valid;
+{{/includeValidation}}
+import {{modelPackage}}.{{modelName}};
+import {{servicePackage}}.{{serviceName}};
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,13 +28,14 @@ import java.util.Optional;
  */
 @RestController
 @RequestMapping("{{basePath}}/{{resourcePath}}")
+@RequiredArgsConstructor
+@Slf4j
 {{#includeSwagger}}
-@Tag(name = "{{modelName}}", description = "API para gerenciamento de {{modelName}}")
+@Tag(name = "{{modelName}}", description = "API para gerenciamento de {{resourcePath}}")
 {{/includeSwagger}}
 public class {{controllerName}} {
 
-    @Autowired
-    private {{serviceName}} {{serviceInstanceName}};
+    private final {{serviceName}} {{serviceInstanceName}};
 
     {{#includeCrud}}
     /**
