@@ -1,21 +1,21 @@
 # Spring Scaffold CLI
 
-Aplicativo de linha de comando para auxiliar na construção de aplicações Java e Spring Boot, oferecendo geração automática de scaffold para models, controllers, services, repositories e templates de projeto.
+🚀 **Versão 2.0.0** - Aplicativo de linha de comando para auxiliar na construção de aplicações Java e Spring Boot, oferecendo geração automática e **funcional** de scaffold para models, controllers, services, repositories e projetos completos.
 
-## 📋 Funcionalidades
+## ✨ Funcionalidades
 
-### Geração de Código
-- **Models/Entities**: Criação de classes com JPA annotations, getters, setters e construtores
-- **Controllers**: Templates de controllers REST com endpoints CRUD
-- **Services**: Classes de serviço com padrões de implementação
-- **Repositories**: Interfaces de repositório JPA/MongoDB
-- **Tests**: Templates de testes unitários e de integração
+### 🎯 Geração de Código (100% Funcional)
+- **Models/Entities**: Criação de classes com JPA annotations, validações, Lombok e construtores
+- **Controllers**: Controllers REST completos com endpoints CRUD, Swagger e validações
+- **Services**: Classes de serviço com interfaces, implementações e transações
+- **Repositories**: Interfaces de repositório JPA/MongoDB com queries customizadas
+- **Projects**: Projetos Spring Boot completos com estrutura Maven
 
-### Templates de Projeto
-- **Projeto Spring Boot**: Estrutura completa de projeto
-- **Configurações de Segurança**: Templates de autenticação e autorização
-- **Configurações de Banco**: Templates para JPA, MongoDB, etc.
-- **Docker**: Arquivos Dockerfile e docker-compose
+### 🏗️ Templates de Projeto
+- **Projeto Spring Boot**: Estrutura completa com pom.xml, application.properties
+- **Configurações de Banco**: Suporte a H2, MySQL, PostgreSQL
+- **Docker**: Arquivos Dockerfile opcionais
+- **Documentação**: README.md e .gitignore automáticos
 
 ## 🚀 Início Rápido
 
@@ -27,7 +27,7 @@ Aplicativo de linha de comando para auxiliar na construção de aplicações Jav
 ```bash
 git clone <repository>
 cd spring-scaffold
-mvn clean install
+mvn clean package -DskipTests
 ```
 
 ### Uso Básico
@@ -267,7 +267,24 @@ Este projeto está licenciado sob a MIT License - veja o arquivo [LICENSE](LICEN
 
 Para suporte, abra uma issue no GitHub ou entre em contato através de [email].
 
-## 🗺️ Roadmap
+## � Changelog
+
+### Versão 2.0.0 (2025-08-22)
+- ✅ **FUNCIONAL**: Todos os comandos agora geram arquivos reais
+- 🎯 Controllers REST completos com CRUD, Swagger, validações
+- 🔧 Services com interface + implementação ou classe única
+- 📦 Repositories JPA com queries customizadas
+- 🏗️ Projetos Spring Boot completos com Maven
+- 🐛 Correções de bugs e melhorias de estabilidade
+
+### Versão 1.0.0 (2025-08-22)
+- 🎉 Versão inicial com estrutura CLI
+- 📋 Comando model funcional
+- ⚠️ Outros comandos apenas simulavam geração
+
+Ver [CHANGELOG.md](CHANGELOG.md) para detalhes completos.
+
+## �🗺️ Roadmap
 
 - [ ] Suporte a Kotlin
 - [ ] Templates para microserviços

@@ -15,19 +15,19 @@ import picocli.CommandLine.Option;
 @Command(
     name = "spring-scaffold",
     mixinStandardHelpOptions = true,
-    version = "Spring Scaffold CLI 1.0.0",
+    version = "Spring Scaffold CLI 2.0.0",
     description = {
-        "@|bold Spring Scaffold CLI|@",
+        "@|bold Spring Scaffold CLI v2.0.0|@",
         "",
-        "Gerador de código para aplicações Spring Boot.",
-        "Cria automaticamente models, controllers, services, repositories e templates de projeto.",
+        "🚀 Gerador de código FUNCIONAL para aplicações Spring Boot.",
+        "Cria automaticamente models, controllers, services, repositories e projetos completos.",
         "",
         "@|underline Comandos disponíveis:|@",
-        "  model      - Gera classes model/entity",
-        "  controller - Gera controllers REST",
-        "  service    - Gera classes de serviço",
-        "  repository - Gera repositories JPA",
-        "  project    - Cria novo projeto Spring Boot"
+        "  model      - Gera classes model/entity com JPA e validações",
+        "  controller - Gera controllers REST com CRUD completo",
+        "  service    - Gera classes de serviço com interfaces",
+        "  repository - Gera repositories JPA com queries customizadas",
+        "  project    - Cria projetos Spring Boot completos"
     },
     subcommands = {
         ModelCommand.class,
