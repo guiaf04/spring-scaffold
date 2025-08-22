@@ -1,0 +1,27 @@
+#!/bin/bash
+
+# Spring Scaffold CLI - Script de execução
+# Facilita a execução do JAR executável
+
+# Diretório onde está o script
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Caminho para o JAR
+JAR_PATH="$SCRIPT_DIR/target/spring-scaffold.jar"
+
+# Verifica se o JAR existe
+if [ ! -f "$JAR_PATH" ]; then
+    echo "❌ Erro: JAR não encontrado em $JAR_PATH"
+    echo "Execute 'mvn clean package' para gerar o JAR"
+    exit 1
+fi
+
+# Verifica se o Java está instalado
+if ! command -v java &> /dev/null; then
+    echo "❌ Erro: Java não encontrado"
+    echo "Instale o Java 17+ e tente novamente"
+    exit 1
+fi
+
+# Executa o JAR com os argumentos passados
+java -jar "$JAR_PATH" "$@"
