@@ -28,7 +28,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Slf4j
 {{#includeSwagger}}
-@Tag(name = "{{modelName}}", description = "API para gerenciamento de {{resourcePath}}")
+@Tag(name = "{{modelName}}", description = "API for {{resourcePath}} management")
 {{/includeSwagger}}
 public class {{controllerName}} {
 
@@ -37,10 +37,10 @@ public class {{controllerName}} {
     {{#includeCrud}}
     @GetMapping
     {{#includeSwagger}}
-    @Operation(summary = "Lista todos os {{modelName}}s")
+    @Operation(summary = "List all {{modelName}}s")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Lista recuperada com sucesso"),
-        @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+        @ApiResponse(responseCode = "200", description = "List retrieved successfully"),
+        @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     {{/includeSwagger}}
     public ResponseEntity<List<{{modelName}}>> findAll() {
@@ -50,14 +50,14 @@ public class {{controllerName}} {
 
     @GetMapping("/{id}")
     {{#includeSwagger}}
-    @Operation(summary = "Busca {{modelName}} por ID")
+    @Operation(summary = "Find {{modelName}} by ID")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "{{modelName}} encontrado"),
-        @ApiResponse(responseCode = "404", description = "{{modelName}} não encontrado")
+        @ApiResponse(responseCode = "200", description = "{{modelName}} found"),
+        @ApiResponse(responseCode = "404", description = "{{modelName}} not found")
     })
     {{/includeSwagger}}
     public ResponseEntity<{{modelName}}> findById(
-            {{#includeSwagger}}@Parameter(description = "ID do {{modelName}}"){{/includeSwagger}}
+            {{#includeSwagger}}@Parameter(description = "{{modelName}} ID"){{/includeSwagger}}
             @PathVariable Long id) {
         Optional<{{modelName}}> item = {{serviceInstanceName}}.findById(id);
         return item.map(ResponseEntity::ok)
@@ -66,14 +66,14 @@ public class {{controllerName}} {
 
     @PostMapping
     {{#includeSwagger}}
-    @Operation(summary = "Cria novo {{modelName}}")
+    @Operation(summary = "Create new {{modelName}}")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "201", description = "{{modelName}} criado com sucesso"),
-        @ApiResponse(responseCode = "400", description = "Dados inválidos")
+        @ApiResponse(responseCode = "201", description = "{{modelName}} created successfully"),
+        @ApiResponse(responseCode = "400", description = "Invalid data")
     })
     {{/includeSwagger}}
     public ResponseEntity<{{modelName}}> create(
-            {{#includeSwagger}}@Parameter(description = "Dados do {{modelName}}"){{/includeSwagger}}
+            {{#includeSwagger}}@Parameter(description = "{{modelName}} data"){{/includeSwagger}}
             {{#includeValidation}}@Valid{{/includeValidation}} @RequestBody {{modelName}} {{modelInstanceName}}) {
         {{modelName}} savedItem = {{serviceInstanceName}}.save({{modelInstanceName}});
         return ResponseEntity.status(HttpStatus.CREATED).body(savedItem);
@@ -81,17 +81,17 @@ public class {{controllerName}} {
 
     @PutMapping("/{id}")
     {{#includeSwagger}}
-    @Operation(summary = "Atualiza {{modelName}} existente")
+    @Operation(summary = "Update existing {{modelName}}")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "{{modelName}} atualizado com sucesso"),
-        @ApiResponse(responseCode = "404", description = "{{modelName}} não encontrado"),
-        @ApiResponse(responseCode = "400", description = "Dados inválidos")
+        @ApiResponse(responseCode = "200", description = "{{modelName}} updated successfully"),
+        @ApiResponse(responseCode = "404", description = "{{modelName}} not found"),
+        @ApiResponse(responseCode = "400", description = "Invalid data")
     })
     {{/includeSwagger}}
     public ResponseEntity<{{modelName}}> update(
-            {{#includeSwagger}}@Parameter(description = "ID do {{modelName}}"){{/includeSwagger}}
+            {{#includeSwagger}}@Parameter(description = "{{modelName}} ID"){{/includeSwagger}}
             @PathVariable Long id,
-            {{#includeSwagger}}@Parameter(description = "Dados atualizados do {{modelName}}"){{/includeSwagger}}
+            {{#includeSwagger}}@Parameter(description = "Updated {{modelName}} data"){{/includeSwagger}}
             {{#includeValidation}}@Valid{{/includeValidation}} @RequestBody {{modelName}} {{modelInstanceName}}) {
         
         if (!{{serviceInstanceName}}.existsById(id)) {
@@ -105,14 +105,14 @@ public class {{controllerName}} {
 
     @DeleteMapping("/{id}")
     {{#includeSwagger}}
-    @Operation(summary = "Remove {{modelName}} por ID")
+    @Operation(summary = "Delete {{modelName}} by ID")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "204", description = "{{modelName}} removido com sucesso"),
-        @ApiResponse(responseCode = "404", description = "{{modelName}} não encontrado")
+        @ApiResponse(responseCode = "204", description = "{{modelName}} deleted successfully"),
+        @ApiResponse(responseCode = "404", description = "{{modelName}} not found")
     })
     {{/includeSwagger}}
     public ResponseEntity<Void> delete(
-            {{#includeSwagger}}@Parameter(description = "ID do {{modelName}}"){{/includeSwagger}}
+            {{#includeSwagger}}@Parameter(description = "{{modelName}} ID"){{/includeSwagger}}
             @PathVariable Long id) {
         
         if (!{{serviceInstanceName}}.existsById(id)) {

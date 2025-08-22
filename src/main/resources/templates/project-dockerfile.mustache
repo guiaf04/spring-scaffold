@@ -1,14 +1,14 @@
-# Dockerfile para {{projectName}}
+# Dockerfile for {{projectName}}
 FROM openjdk:{{javaVersion}}-jre-slim
 
-# Criar diretório da aplicação
+# Create application directory
 WORKDIR /app
 
-# Copiar o JAR da aplicação
+# Copy application JAR
 COPY target/{{artifactId}}-*.jar app.jar
 
-# Expor a porta
+# Expose port
 EXPOSE 8080
 
-# Comando para executar a aplicação
+# Command to run the application
 ENTRYPOINT ["java", "-jar", "app.jar"]
