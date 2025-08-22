@@ -12,9 +12,9 @@ import java.util.concurrent.Callable;
 @Command(
     name = "controller",
     description = {
-        "Gera um controller REST com endpoints CRUD básicos.",
+        "Generate a REST controller with basic CRUD endpoints.",
         "",
-        "@|underline Exemplos:|@",
+        "@|underline Examples:|@",
         "  @|yellow spring-scaffold controller UserController|@",
         "  @|yellow spring-scaffold controller ProductController -m Product|@",
         "  @|yellow spring-scaffold controller CustomerController --path /api/v2|@"
@@ -25,82 +25,82 @@ public class ControllerCommand implements Callable<Integer> {
 
     @Parameters(
         index = "0",
-        description = "Nome do controller (ex: UserController, ProductController)"
+        description = "Controller name (ex: UserController, ProductController)"
     )
     private String controllerName;
 
     @Option(
         names = {"-p", "--package", "--pkg"},
-        description = "Pacote do controller (padrão: ${DEFAULT-VALUE})",
+        description = "Controller package (default: ${DEFAULT-VALUE})",
         defaultValue = "com.example.controller"
     )
     private String packageName;
 
     @Option(
         names = {"-m", "--model", "--entity"},
-        description = "Nome da classe model associada (ex: User, Product)"
+        description = "Associated model class name (ex: User, Product)"
     )
     private String modelName;
 
     @Option(
         names = {"--model-package", "--model-pkg"},
-        description = "Pacote da classe model (padrão: ${DEFAULT-VALUE})",
+        description = "Model class package (default: ${DEFAULT-VALUE})",
         defaultValue = "com.example.model"
     )
     private String modelPackage;
 
     @Option(
         names = {"--service-package", "--service-pkg"},
-        description = "Pacote da classe service (padrão: ${DEFAULT-VALUE})",
+        description = "Service class package (default: ${DEFAULT-VALUE})",
         defaultValue = "com.example.service"
     )
     private String servicePackage;
 
     @Option(
         names = {"--path"},
-        description = "Path base da API REST (padrão: ${DEFAULT-VALUE})",
+        description = "REST API base path (default: ${DEFAULT-VALUE})",
         defaultValue = "/api/v1"
     )
     private String basePath;
 
     @Option(
         names = {"--crud"},
-        description = "Incluir operações CRUD completas (padrão: ${DEFAULT-VALUE})",
+        description = "Include complete CRUD operations (default: ${DEFAULT-VALUE})",
         defaultValue = "true"
     )
     private boolean includeCrud;
 
     @Option(
         names = {"--swagger"},
-        description = "Incluir annotations Swagger/OpenAPI (padrão: ${DEFAULT-VALUE})",
+        description = "Include Swagger/OpenAPI annotations (default: ${DEFAULT-VALUE})",
         defaultValue = "true"
     )
     private boolean includeSwagger;
 
     @Option(
         names = {"--validation"},
-        description = "Incluir validações de request (padrão: ${DEFAULT-VALUE})",
+        description = "Include request validations (default: ${DEFAULT-VALUE})",
         defaultValue = "true"
     )
     private boolean includeValidation;
 
     @Option(
         names = {"-o", "--output"},
-        description = "Diretório de saída (padrão: diretório atual)"
+        description = "Output directory (default: current directory)"
     )
     private String outputDirectory = ".";
 
     @Override
     public Integer call() throws Exception {
         try {
-            log.info("🚀 Gerando controller: {}", controllerName);
+            log.info("🚀 Generating controller: {}", controllerName);
             if (controllerName == null || controllerName.trim().isEmpty()) {
-                System.err.println("❌ Nome do controller é obrigatório");
+                System.err.println("❌ Controller name is required");
                 return 1;
             }
             if (modelName == null || modelName.trim().isEmpty()) {
                 modelName = inferModelName(controllerName);
-                log.info("Model inferido: {}", modelName);
+                log.info("Inferred model: {}", modelName);
             }
             ControllerGenerator generator = new ControllerGenerator();
             boolean success = generator.generate(
@@ -117,25 +117,25 @@ public class ControllerCommand implements Callable<Integer> {
             );
 
             if (success) {
-                System.out.println("✅ Controller " + controllerName + " gerado com sucesso!");
-                System.out.println("📁 Localização: " + outputDirectory + "/" + 
+                System.out.println("✅ Controller " + controllerName + " generated successfully!");
+                System.out.println("📁 Location: " + outputDirectory + "/" + 
                     packageName.replace(".", "/") + "/" + controllerName + ".java");
                 
                 if (modelName != null) {
-                    System.out.println("🔗 Model associado: " + modelName);
-                    System.out.println("🌐 Endpoints base: " + basePath + "/" + 
+                    System.out.println("🔗 Associated model: " + modelName);
+                    System.out.println("🌐 Base endpoints: " + basePath + "/" + 
                         modelName.toLowerCase() + "s");
                 }
                 
                 return 0;
             } else {
-                System.err.println("❌ Falha ao gerar controller");
+                System.err.println("❌ Failed to generate controller");
                 return 1;
             }
 
         } catch (Exception e) {
-            log.error("Erro ao gerar controller", e);
-            System.err.println("❌ Erro inesperado: " + e.getMessage());
+            log.error("Error generating controller", e);
+            System.err.println("❌ Unexpected error: " + e.getMessage());
             return 1;
         }
     }

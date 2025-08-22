@@ -29,7 +29,7 @@ public class ControllerGenerator {
             String outputDirectory) {
         
         try {
-            log.info("Gerando controller {} no pacote {}", controllerName, packageName);
+            log.info("Generating controller {} in package {}", controllerName, packageName);
             
             Map<String, Object> context = new HashMap<>();
             context.put("packageName", packageName);
@@ -54,7 +54,7 @@ public class ControllerGenerator {
             
             log.info("Configurações:");
             log.info("- Controller: {}", controllerName);
-            log.info("- Pacote: {}", packageName);
+            log.info("- Package: {}", packageName);
             log.info("- Model: {}", modelName);
             log.info("- Service: {}", serviceName);
             log.info("- Resource Path: {}", resourcePath);
@@ -69,11 +69,11 @@ public class ControllerGenerator {
             String fileName = fullPath + "/" + controllerName + ".java";
             FileUtils.createFile(fileName, code);
             
-            log.info("Controller {} gerado com sucesso em {}", controllerName, fileName);
+            log.info("Controller {} generated successfully at {}", controllerName, fileName);
             return true;
             
         } catch (Exception e) {
-            log.error("Erro ao gerar controller", e);
+            log.error("Error generating controller", e);
             return false;
         }
     }

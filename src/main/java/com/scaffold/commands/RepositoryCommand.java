@@ -12,9 +12,9 @@ import java.util.concurrent.Callable;
 @Command(
     name = "repository",
     description = {
-        "Gera uma interface repository para acesso a dados.",
+        "Generate a repository interface for data access.",
         "",
-        "@|underline Exemplos:|@",
+        "@|underline Examples:|@",
         "  @|yellow spring-scaffold repository UserRepository|@",
         "  @|yellow spring-scaffold repository ProductRepository -m Product|@",
         "  @|yellow spring-scaffold repository CustomerRepository --type mongodb|@"
@@ -25,61 +25,61 @@ public class RepositoryCommand implements Callable<Integer> {
 
     @Parameters(
         index = "0",
-        description = "Nome da interface repository (ex: UserRepository, ProductRepository)"
+        description = "Repository interface name (ex: UserRepository, ProductRepository)"
     )
     private String repositoryName;
 
     @Option(
         names = {"-p", "--package", "--pkg"},
-        description = "Pacote do repository (padrão: ${DEFAULT-VALUE})",
+        description = "Repository package (default: ${DEFAULT-VALUE})",
         defaultValue = "com.example.repository"
     )
     private String packageName;
 
     @Option(
         names = {"-m", "--model", "--entity"},
-        description = "Nome da classe model associada (ex: User, Product)"
+        description = "Associated model class name (ex: User, Product)"
     )
     private String modelName;
 
     @Option(
         names = {"--model-package", "--model-pkg"},
-        description = "Pacote da classe model (padrão: ${DEFAULT-VALUE})",
+        description = "Model class package (default: ${DEFAULT-VALUE})",
         defaultValue = "com.example.model"
     )
     private String modelPackage;
 
     @Option(
         names = {"--type", "-t"},
-        description = "Tipo de repository: ${COMPLETION-CANDIDATES} (padrão: ${DEFAULT-VALUE})",
+        description = "Repository type: ${COMPLETION-CANDIDATES} (default: ${DEFAULT-VALUE})",
         defaultValue = "JPA"
     )
     private RepositoryType repositoryType;
 
     @Option(
         names = {"--id-type"},
-        description = "Tipo do ID da entidade (padrão: ${DEFAULT-VALUE})",
+        description = "Entity ID type (default: ${DEFAULT-VALUE})",
         defaultValue = "Long"
     )
     private String idType;
 
     @Option(
         names = {"--custom-queries"},
-        description = "Incluir exemplos de queries customizadas (padrão: ${DEFAULT-VALUE})",
+        description = "Include custom query examples (default: ${DEFAULT-VALUE})",
         defaultValue = "true"
     )
     private boolean includeCustomQueries;
 
     @Option(
         names = {"--pagination"},
-        description = "Incluir suporte a paginação (padrão: ${DEFAULT-VALUE})",
+        description = "Include pagination support (default: ${DEFAULT-VALUE})",
         defaultValue = "true"
     )
     private boolean includePagination;
 
     @Option(
         names = {"-o", "--output"},
-        description = "Diretório de saída (padrão: diretório atual)"
+        description = "Output directory (default: current directory)"
     )
     private String outputDirectory = ".";
 
@@ -90,14 +90,14 @@ public class RepositoryCommand implements Callable<Integer> {
     @Override
     public Integer call() throws Exception {
         try {
-            log.info("🚀 Gerando repository: {}", repositoryName);
+            log.info("🚀 Generating repository: {}", repositoryName);
             if (repositoryName == null || repositoryName.trim().isEmpty()) {
-                System.err.println("❌ Nome do repository é obrigatório");
+                System.err.println("❌ Repository name is required");
                 return 1;
             }
             if (modelName == null || modelName.trim().isEmpty()) {
                 modelName = inferModelName(repositoryName);
-                log.info("Model inferido: {}", modelName);
+                log.info("Inferred model: {}", modelName);
             }
             RepositoryGenerator generator = new RepositoryGenerator();
             boolean success = generator.generate(
@@ -113,25 +113,25 @@ public class RepositoryCommand implements Callable<Integer> {
             );
 
             if (success) {
-                System.out.println("✅ Repository " + repositoryName + " gerado com sucesso!");
-                System.out.println("📁 Localização: " + outputDirectory + "/" + 
+                System.out.println("✅ Repository " + repositoryName + " generated successfully!");
+                System.out.println("📁 Location: " + outputDirectory + "/" + 
                     packageName.replace(".", "/") + "/" + repositoryName + ".java");
-                System.out.println("🔧 Tipo: " + repositoryType);
+                System.out.println("🔧 Type: " + repositoryType);
                 
                 if (modelName != null) {
-                    System.out.println("🔗 Model associado: " + modelName);
-                    System.out.println("🔑 Tipo do ID: " + idType);
+                    System.out.println("🔗 Associated model: " + modelName);
+                    System.out.println("🔑 ID type: " + idType);
                 }
                 
                 return 0;
             } else {
-                System.err.println("❌ Falha ao gerar repository");
+                System.err.println("❌ Failed to generate repository");
                 return 1;
             }
 
         } catch (Exception e) {
-            log.error("Erro ao gerar repository", e);
-            System.err.println("❌ Erro inesperado: " + e.getMessage());
+            log.error("Error generating repository", e);
+            System.err.println("❌ Unexpected error: " + e.getMessage());
             return 1;
         }
     }

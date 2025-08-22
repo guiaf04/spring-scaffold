@@ -29,7 +29,7 @@ public class RepositoryGenerator {
             String outputDirectory) {
         
         try {
-            log.info("Gerando repository {} no pacote {}", repositoryName, packageName);
+            log.info("Generating repository {} in package {}", repositoryName, packageName);
             Map<String, Object> context = new HashMap<>();
             context.put("packageName", packageName);
             context.put("repositoryName", repositoryName);
@@ -62,10 +62,10 @@ public class RepositoryGenerator {
             
             log.info("Configurações:");
             log.info("- Repository: {}", repositoryName);
-            log.info("- Pacote: {}", packageName);
+            log.info("- Package: {}", packageName);
             log.info("- Model: {}", modelName);
-            log.info("- Tipo Base: {}", baseType);
-            log.info("- Tipo ID: {}", idType);
+            log.info("- Base Type: {}", baseType);
+            log.info("- ID Type: {}", idType);
             String code = templateEngine.processTemplate("repository.java.mustache", context);
             String packagePath = packageName.replace(".", "/");
             String fullPath = outputDirectory + "/src/main/java/" + packagePath;
@@ -73,11 +73,11 @@ public class RepositoryGenerator {
             String fileName = fullPath + "/" + repositoryName + ".java";
             FileUtils.createFile(fileName, code);
             
-            log.info("Repository {} gerado com sucesso em {}", repositoryName, fileName);
+            log.info("Repository {} generated successfully at {}", repositoryName, fileName);
             return true;
             
         } catch (Exception e) {
-            log.error("Erro ao gerar repository", e);
+            log.error("Error generating repository", e);
             return false;
         }
     }

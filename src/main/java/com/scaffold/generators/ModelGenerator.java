@@ -28,16 +28,16 @@ public class ModelGenerator {
             String outputDirectory) {
         
         try {
-            log.info("Gerando model {} no pacote {}", className, packageName);
+            log.info("Generating model {} in package {}", className, packageName);
             
-            // Inferir nome da tabela se não especificado
+            // Infer table name if not specified
             if (tableName == null || tableName.trim().isEmpty()) {
                 tableName = inferTableName(className);
             }
             
             log.info("Configurações:");
             log.info("- Classe: {}", className);
-            log.info("- Pacote: {}", packageName);
+            log.info("- Package: {}", packageName);
             log.info("- Tabela: {}", tableName);
             log.info("- JPA: {}", includeJpa);
             log.info("- Lombok: {}", useLombok);
@@ -53,25 +53,25 @@ public class ModelGenerator {
                 className, packageName, fields, tableName, includeJpa, useLombok, includeValidation
             );
             
-            // Gerar código usando template
+            // Generate code using template
             String generatedCode = templateEngine.processTemplate("model.java.mustache", context);
             
-            // Construir caminho do arquivo
+            // Build file path
             String filePath = FileUtils.buildFilePath(outputDirectory, packageName, className);
             
-            // Criar arquivo
+            // Create file
             boolean success = FileUtils.createFile(filePath, generatedCode);
             
             if (success) {
-                log.info("Model {} gerado com sucesso em: {}", className, filePath);
+                log.info("Model {} generated successfully at: {}", className, filePath);
             } else {
-                log.error("Falha ao gerar model {}", className);
+                log.error("Failed to generate model {}", className);
             }
             
             return success;
             
         } catch (Exception e) {
-            log.error("Erro ao gerar model", e);
+            log.error("Error generating model", e);
             return false;
         }
     }
@@ -86,8 +86,7 @@ public class ModelGenerator {
             boolean includeValidation) {
         
         Map<String, Object> context = new HashMap<>();
-        
-        // Informações básicas
+
         context.put("className", className);
         context.put("packageName", packageName);
         context.put("tableName", tableName);
@@ -95,13 +94,11 @@ public class ModelGenerator {
         context.put("useLombok", useLombok);
         context.put("includeValidation", includeValidation);
         
-        // Processar campos
         List<Map<String, Object>> processedFields = fields.stream()
             .map(this::processField)
             .collect(Collectors.toList());
         context.put("fields", processedFields);
-        
-        // Coletar imports necessários
+
         Set<String> imports = collectImports(fields, includeJpa, includeValidation, useLombok);
         context.put("imports", new ArrayList<>(imports));
         
@@ -132,7 +129,7 @@ public class ModelGenerator {
     private Set<String> collectImports(List<FieldInfo> fields, boolean includeJpa, boolean includeValidation, boolean useLombok) {
         Set<String> imports = new HashSet<>();
         
-        // Imports para tipos dos campos
+        // Imports for field types
         for (FieldInfo field : fields) {
             String requiredImport = field.getRequiredImport();
             if (requiredImport != null) {
@@ -170,10 +167,8 @@ public class ModelGenerator {
     }
 
     private String inferTableName(String className) {
-        // Converter CamelCase para snake_case e pluralizar
         String snakeCase = className.replaceAll("([a-z])([A-Z])", "$1_$2").toLowerCase();
         
-        // Pluralização simples
         if (snakeCase.endsWith("y")) {
             return snakeCase.substring(0, snakeCase.length() - 1) + "ies";
         } else if (snakeCase.endsWith("s") || snakeCase.endsWith("sh") || 

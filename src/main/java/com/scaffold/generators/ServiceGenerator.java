@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Gerador de classes Service
+ * Service class generator
  */
 @Slf4j
 public class ServiceGenerator {
@@ -32,7 +32,7 @@ public class ServiceGenerator {
             String outputDirectory) {
         
         try {
-            log.info("Gerando service {} no pacote {}", serviceName, packageName);
+            log.info("Generating service {} in package {}", serviceName, packageName);
             
             Map<String, Object> context = new HashMap<>();
             context.put("packageName", packageName);
@@ -60,10 +60,10 @@ public class ServiceGenerator {
             
             log.info("Configurações:");
             log.info("- Service: {}", serviceName);
-            log.info("- Pacote: {}", packageName);
+            log.info("- Package: {}", packageName);
             log.info("- Model: {}", modelName);
             log.info("- Repository: {}", repositoryName);
-            log.info("- Gerar Interface: {}", generateInterface);
+            log.info("- Generate Interface: {}", generateInterface);
             
             String packagePath = packageName.replace(".", "/");
             String fullPath = outputDirectory + "/src/main/java/" + packagePath;
@@ -76,26 +76,26 @@ public class ServiceGenerator {
                 String interfaceCode = templateEngine.processTemplate("service-interface.java.mustache", context);
                 String interfaceFileName = fullPath + "/" + interfaceName + ".java";
                 FileUtils.createFile(interfaceFileName, interfaceCode);
-                log.info("Interface {} gerada em {}", interfaceName, interfaceFileName);
+                log.info("Interface {} generated at {}", interfaceName, interfaceFileName);
                 
                 
                 String implCode = templateEngine.processTemplate("service-impl.java.mustache", context);
                 String implFileName = fullPath + "/" + implementationName + ".java";
                 FileUtils.createFile(implFileName, implCode);
-                log.info("Implementação {} gerada em {}", implementationName, implFileName);
+                log.info("Implementation {} generated at {}", implementationName, implFileName);
             } else {
                 
                 String serviceCode = templateEngine.processTemplate("service.java.mustache", context);
                 String serviceFileName = fullPath + "/" + serviceName + ".java";
                 FileUtils.createFile(serviceFileName, serviceCode);
-                log.info("Service {} gerado em {}", serviceName, serviceFileName);
+                log.info("Service {} generated at {}", serviceName, serviceFileName);
             }
             
-            log.info("Service gerado com sucesso!");
+            log.info("Service generated successfully!");
             return success;
             
         } catch (Exception e) {
-            log.error("Erro ao gerar service", e);
+            log.error("Error generating service", e);
             return false;
         }
     }

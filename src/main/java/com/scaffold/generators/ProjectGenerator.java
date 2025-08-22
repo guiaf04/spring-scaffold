@@ -34,7 +34,7 @@ public class ProjectGenerator {
             String outputDirectory) {
         
         try {
-            log.info("Criando projeto Spring Boot: {}", projectName);
+            log.info("Creating Spring Boot project: {}", projectName);
             Map<String, Object> context = new HashMap<>();
             context.put("projectName", projectName);
             context.put("basePackage", basePackage);
@@ -59,16 +59,16 @@ public class ProjectGenerator {
             log.info("- Projeto: {}", projectName);
             log.info("- Artifact ID: {}", artifactId);
             log.info("- Classe Principal: {}", mainClassName);
-            log.info("- Banco: {}", database);
+            log.info("- Database: {}", database);
             
             String projectPath = outputDirectory + "/" + artifactId;
             generateProjectStructure(projectPath, basePackage, context);
             
-            log.info("Projeto {} criado com sucesso em {}", projectName, projectPath);
+            log.info("Project {} created successfully at {}", projectName, projectPath);
             return true;
             
         } catch (Exception e) {
-            log.error("Erro ao criar projeto", e);
+            log.error("Error creating project", e);
             return false;
         }
     }

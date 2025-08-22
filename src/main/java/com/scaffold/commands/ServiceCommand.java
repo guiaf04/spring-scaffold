@@ -12,9 +12,9 @@ import java.util.concurrent.Callable;
 @Command(
     name = "service",
     description = {
-        "Gera uma classe de serviço com lógica de negócio.",
+        "Generate a service class with business logic.",
         "",
-        "@|underline Exemplos:|@",
+        "@|underline Examples:|@",
         "  @|yellow spring-scaffold service UserService|@",
         "  @|yellow spring-scaffold service ProductService -m Product|@",
         "  @|yellow spring-scaffold service CustomerService --no-interface|@"
@@ -25,82 +25,82 @@ public class ServiceCommand implements Callable<Integer> {
 
     @Parameters(
         index = "0",
-        description = "Nome da classe service (ex: UserService, ProductService)"
+        description = "Service class name (ex: UserService, ProductService)"
     )
     private String serviceName;
 
     @Option(
         names = {"-p", "--package", "--pkg"},
-        description = "Pacote do service (padrão: ${DEFAULT-VALUE})",
+        description = "Service package (default: ${DEFAULT-VALUE})",
         defaultValue = "com.example.service"
     )
     private String packageName;
 
     @Option(
         names = {"-m", "--model", "--entity"},
-        description = "Nome da classe model associada (ex: User, Product)"
+        description = "Associated model class name (ex: User, Product)"
     )
     private String modelName;
 
     @Option(
         names = {"--model-package", "--model-pkg"},
-        description = "Pacote da classe model (padrão: ${DEFAULT-VALUE})",
+        description = "Model class package (default: ${DEFAULT-VALUE})",
         defaultValue = "com.example.model"
     )
     private String modelPackage;
 
     @Option(
         names = {"--repository-package", "--repo-pkg"},
-        description = "Pacote da classe repository (padrão: ${DEFAULT-VALUE})",
+        description = "Repository class package (default: ${DEFAULT-VALUE})",
         defaultValue = "com.example.repository"
     )
     private String repositoryPackage;
 
     @Option(
         names = {"--interface"},
-        description = "Gerar interface do service (padrão: ${DEFAULT-VALUE})",
+        description = "Generate service interface (default: ${DEFAULT-VALUE})",
         defaultValue = "true"
     )
     private boolean generateInterface;
 
     @Option(
         names = {"--crud"},
-        description = "Incluir métodos CRUD básicos (padrão: ${DEFAULT-VALUE})",
+        description = "Include basic CRUD methods (default: ${DEFAULT-VALUE})",
         defaultValue = "true"
     )
     private boolean includeCrud;
 
     @Option(
         names = {"--transactional"},
-        description = "Incluir annotations @Transactional (padrão: ${DEFAULT-VALUE})",
+        description = "Include @Transactional annotations (default: ${DEFAULT-VALUE})",
         defaultValue = "true"
     )
     private boolean includeTransactional;
 
     @Option(
         names = {"--validation"},
-        description = "Incluir validações de negócio (padrão: ${DEFAULT-VALUE})",
+        description = "Include business validations (default: ${DEFAULT-VALUE})",
         defaultValue = "true"
     )
     private boolean includeValidation;
 
     @Option(
         names = {"-o", "--output"},
-        description = "Diretório de saída (padrão: diretório atual)"
+        description = "Output directory (default: current directory)"
     )
     private String outputDirectory = ".";
 
     @Override
     public Integer call() throws Exception {
         try {
-            log.info("🚀 Gerando service: {}", serviceName);
+            log.info("🚀 Generating service: {}", serviceName);
             if (serviceName == null || serviceName.trim().isEmpty()) {
-                System.err.println("❌ Nome do service é obrigatório");
+                System.err.println("❌ Service name is required");
                 return 1;
             }
             if (modelName == null || modelName.trim().isEmpty()) {
                 modelName = inferModelName(serviceName);
-                log.info("Model inferido: {}", modelName);
+                log.info("Inferred model: {}", modelName);
             }
             ServiceGenerator generator = new ServiceGenerator();
             boolean success = generator.generate(
@@ -117,8 +117,8 @@ public class ServiceCommand implements Callable<Integer> {
             );
 
             if (success) {
-                System.out.println("✅ Service " + serviceName + " gerado com sucesso!");
-                System.out.println("📁 Localização: " + outputDirectory + "/" + 
+                System.out.println("✅ Service " + serviceName + " generated successfully!");
+                System.out.println("📁 Location: " + outputDirectory + "/" + 
                     packageName.replace(".", "/") + "/" + serviceName + ".java");
                 
                 if (generateInterface) {
@@ -127,18 +127,18 @@ public class ServiceCommand implements Callable<Integer> {
                 }
                 
                 if (modelName != null) {
-                    System.out.println("🔗 Model associado: " + modelName);
+                    System.out.println("🔗 Associated model: " + modelName);
                 }
                 
                 return 0;
             } else {
-                System.err.println("❌ Falha ao gerar service");
+                System.err.println("❌ Failed to generate service");
                 return 1;
             }
 
         } catch (Exception e) {
-            log.error("Erro ao gerar service", e);
-            System.err.println("❌ Erro inesperado: " + e.getMessage());
+            log.error("Error generating service", e);
+            System.err.println("❌ Unexpected error: " + e.getMessage());
             return 1;
         }
     }

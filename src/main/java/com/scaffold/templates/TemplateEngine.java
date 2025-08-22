@@ -25,8 +25,8 @@ public class TemplateEngine {
             mustache.execute(writer, context);
             return writer.toString();
         } catch (Exception e) {
-            log.error("Erro ao processar template: {}", templateName, e);
-            throw new RuntimeException("Erro ao processar template: " + templateName, e);
+            log.error("Error processing template: {}", templateName, e);
+            throw new RuntimeException("Error processing template: " + templateName, e);
         }
     }
 
@@ -37,8 +37,8 @@ public class TemplateEngine {
             mustache.execute(writer, context);
             return writer.toString();
         } catch (Exception e) {
-            log.error("Erro ao processar template inline", e);
-            throw new RuntimeException("Erro ao processar template inline", e);
+            log.error("Error processing inline template", e);
+            throw new RuntimeException("Error processing inline template", e);
         }
     }
 }

@@ -12,15 +12,15 @@ import picocli.CommandLine.Option;
     description = {
         "@|bold Spring Scaffold CLI v2.0.0|@",
         "",
-        "🚀 Gerador de código FUNCIONAL para aplicações Spring Boot.",
-        "Cria automaticamente models, controllers, services, repositories e projetos completos.",
+        "🚀 FUNCTIONAL code generator for Spring Boot applications.",
+        "Automatically creates models, controllers, services, repositories and complete projects.",
         "",
-        "@|underline Comandos disponíveis:|@",
-        "  model      - Gera classes model/entity com JPA e validações",
-        "  controller - Gera controllers REST com CRUD completo",
-        "  service    - Gera classes de serviço com interfaces",
-        "  repository - Gera repositories JPA com queries customizadas",
-        "  project    - Cria projetos Spring Boot completos"
+        "@|underline Available commands:|@",
+        "  model      - Generate model/entity classes with JPA and validations",
+        "  controller - Generate REST controllers with complete CRUD",
+        "  service    - Generate service classes with interfaces",
+        "  repository - Generate JPA repositories with custom queries",
+        "  project    - Create complete Spring Boot projects"
     },
     subcommands = {
         ModelCommand.class,
@@ -37,7 +37,7 @@ import picocli.CommandLine.Option;
         "  @|yellow spring-scaffold controller UserController -m User|@",
         "  @|yellow spring-scaffold project my-app --package com.example|@",
         "",
-        "Para mais informações sobre um comando específico:",
+        "For more informations about a specific command:",
         "  @|yellow spring-scaffold <comando> --help|@"
     }
 )
@@ -51,7 +51,7 @@ public class SpringScaffoldCLI implements Runnable {
 
     @Option(
         names = {"-q", "--quiet"}, 
-        description = "Suprime saídas não essenciais"
+        description = "Suppress non-essential outputs"
     )
     private boolean quiet = false;
 
@@ -65,7 +65,7 @@ public class SpringScaffoldCLI implements Runnable {
             .setColorScheme(createColorScheme());
 
         commandLine.setExecutionExceptionHandler((ex, cmd, parseResult) -> {
-            cmd.getErr().println(cmd.getColorScheme().errorText("❌ Erro: " + ex.getMessage()));
+            cmd.getErr().println(cmd.getColorScheme().errorText("❌ Error: " + ex.getMessage()));
             if (parseResult.hasMatchedOption("--verbose")) {
                 ex.printStackTrace(cmd.getErr());
             }

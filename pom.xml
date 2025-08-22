@@ -10,14 +10,14 @@
     <packaging>jar</packaging>
 
     <name>Spring Scaffold CLI</name>
-    <description>CLI para scaffolding de aplicações Spring Boot</description>
+    <description>CLI for Spring Boot applications scaffolding</description>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         
-        <!-- Versões das dependências -->
+        <!-- Dependency versions -->
         <picocli.version>4.7.5</picocli.version>
         <mustache.version>0.9.10</mustache.version>
         <lombok.version>1.18.30</lombok.version>
@@ -29,21 +29,21 @@
     </properties>
 
     <dependencies>
-        <!-- Picocli - Framework para CLI -->
+        <!-- Picocli - CLI Framework -->
         <dependency>
             <groupId>info.picocli</groupId>
             <artifactId>picocli</artifactId>
             <version>${picocli.version}</version>
         </dependency>
 
-        <!-- Mustache - Engine de templates -->
+        <!-- Mustache - Template engine -->
         <dependency>
             <groupId>com.github.spullara.mustache.java</groupId>
             <artifactId>compiler</artifactId>
             <version>${mustache.version}</version>
         </dependency>
 
-        <!-- Lombok - Redução de boilerplate -->
+        <!-- Lombok - Boilerplate reduction -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -51,7 +51,7 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- Jackson - Manipulação de JSON/YAML -->
+        <!-- Jackson - JSON/YAML manipulation -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
@@ -80,7 +80,7 @@
             <version>${logback.version}</version>
         </dependency>
 
-        <!-- Dependências de teste -->
+        <!-- Test dependencies -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
@@ -103,7 +103,7 @@
 
     <build>
         <plugins>
-            <!-- Plugin do compilador -->
+            <!-- Compiler plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -114,14 +114,14 @@
                 </configuration>
             </plugin>
 
-            <!-- Plugin para testes -->
+            <!-- Test plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.1.2</version>
             </plugin>
 
-            <!-- Plugin para gerar JAR executável -->
+            <!-- Plugin to generate executable JAR -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
@@ -144,7 +144,7 @@
                 </executions>
             </plugin>
 
-            <!-- Plugin para análise de código -->
+            <!-- Code analysis plugin -->
             <plugin>
                 <groupId>org.sonarsource.scanner.maven</groupId>
                 <artifactId>sonar-maven-plugin</artifactId>
@@ -154,7 +154,7 @@
     </build>
 
     <profiles>
-        <!-- Profile para desenvolvimento -->
+        <!-- Development profile -->
         <profile>
             <id>dev</id>
             <properties>
@@ -162,7 +162,7 @@
             </properties>
         </profile>
 
-        <!-- Profile para produção -->
+        <!-- Production profile -->
         <profile>
             <id>prod</id>
             <properties>

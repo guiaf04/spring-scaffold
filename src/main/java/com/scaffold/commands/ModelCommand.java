@@ -15,9 +15,9 @@ import java.util.concurrent.Callable;
 @Command(
     name = "model",
     description = {
-        "Gera uma classe model/entity com annotations JPA e Lombok.",
+        "Generate a model/entity class with JPA and Lombok annotations.",
         "",
-        "@|underline Exemplos:|@",
+        "@|underline Examples:|@",
         "  @|yellow spring-scaffold model User|@",
         "  @|yellow spring-scaffold model Product name:String price:BigDecimal|@",
         "  @|yellow spring-scaffold model Customer --pkg com.example.entity|@"
@@ -28,20 +28,20 @@ public class ModelCommand implements Callable<Integer> {
 
     @Parameters(
         index = "0",
-        description = "Nome da classe model (ex: User, Product, Customer)"
+        description = "Model class name (ex: User, Product, Customer)"
     )
     private String className;
 
     @Parameters(
         index = "1..*",
         arity = "0..*",
-        description = "Campos no formato 'nome:tipo' (ex: name:String age:Integer)"
+        description = "Fields in 'name:type' format (ex: name:String age:Integer)"
     )
     private List<String> fieldParams = new ArrayList<>();
 
     @Option(
         names = {"-p", "--package", "--pkg"},
-        description = "Pacote da classe (padrão: ${DEFAULT-VALUE})",
+        description = "Class package (default: ${DEFAULT-VALUE})",
         defaultValue = "com.example.model"
     )
     private String packageName;
@@ -49,9 +49,9 @@ public class ModelCommand implements Callable<Integer> {
     @Option(
         names = {"-f", "--fields"},
         description = {
-            "Lista de campos no formato 'nome:tipo,nome:tipo' (alternativa aos parâmetros posicionais)",
-            "Tipos suportados: String, Integer, Long, Boolean, BigDecimal, LocalDate, LocalDateTime",
-            "Exemplo: 'name:String,age:Integer,active:Boolean'"
+            "Field list in 'name:type,name:type' format (alternative to positional parameters)",
+            "Supported types: String, Integer, Long, Boolean, BigDecimal, LocalDate, LocalDateTime",
+            "Example: 'name:String,age:Integer,active:Boolean'"
         },
         split = ","
     )
@@ -59,43 +59,43 @@ public class ModelCommand implements Callable<Integer> {
 
     @Option(
         names = {"-t", "--table", "--tbl"},
-        description = "Nome da tabela no banco (padrão: nome da classe em snake_case)"
+        description = "Database table name (default: class name in snake_case)"
     )
     private String tableName;
 
     @Option(
         names = {"--jpa", "--entity"},
-        description = "Incluir annotations JPA (@Entity, @Table, etc.) (padrão: ${DEFAULT-VALUE})",
+        description = "Include JPA annotations (@Entity, @Table, etc.) (default: ${DEFAULT-VALUE})",
         defaultValue = "true"
     )
     private boolean includeJpa;
 
     @Option(
         names = {"--lombok", "--data"},
-        description = "Usar Lombok annotations (@Data, @Entity, etc.) (padrão: ${DEFAULT-VALUE})",
+        description = "Use Lombok annotations (@Data, @Entity, etc.) (default: ${DEFAULT-VALUE})",
         defaultValue = "true"
     )
     private boolean useLombok;
 
     @Option(
         names = {"--validation", "--valid"},
-        description = "Incluir Bean Validation annotations (padrão: ${DEFAULT-VALUE})",
+        description = "Include Bean Validation annotations (default: ${DEFAULT-VALUE})",
         defaultValue = "false"
     )
     private boolean includeValidation;
 
     @Option(
         names = {"-o", "--output", "--out"},
-        description = "Diretório de saída (padrão: diretório atual)"
+        description = "Output directory (default: current directory)"
     )
     private String outputDirectory = ".";
 
     @Override
     public Integer call() throws Exception {
         try {
-            log.info("🚀 Gerando model: {}", className);
+            log.info("🚀 Generating model: {}", className);
             if (className == null || className.trim().isEmpty()) {
-                System.err.println("❌ Nome da classe é obrigatório");
+                System.err.println("❌ Class name is required");
                 return 1;
             }
             List<FieldInfo> fieldInfoList = parseFields();
@@ -112,18 +112,18 @@ public class ModelCommand implements Callable<Integer> {
             );
 
             if (success) {
-                System.out.println("✅ Model " + className + " gerado com sucesso!");
-                System.out.println("📁 Localização: " + outputDirectory + "/" + 
+                System.out.println("✅ Model " + className + " generated successfully!");
+                System.out.println("📁 Location: " + outputDirectory + "/" + 
                     packageName.replace(".", "/") + "/" + className + ".java");
                 return 0;
             } else {
-                System.err.println("❌ Falha ao gerar model");
+                System.err.println("❌ Failed to generate model");
                 return 1;
             }
 
         } catch (Exception e) {
-            log.error("Erro ao gerar model", e);
-            System.err.println("❌ Erro inesperado: " + e.getMessage());
+            log.error("Error generating model", e);
+            System.err.println("❌ Unexpected error: " + e.getMessage());
             return 1;
         }
     }
@@ -154,14 +154,14 @@ public class ModelCommand implements Callable<Integer> {
                         fieldInfoList.add(new FieldInfo(name, type));
                     }
                 } else {
-                    System.err.println("⚠️  Campo inválido ignorado: " + field);
-                    System.err.println("   Formato esperado: nome:tipo");
+                    System.err.println("⚠️  Invalid field ignored: " + field);
+                    System.err.println("   Expected format: name:type");
                 }
             }
         }
         
         if (fieldInfoList.isEmpty()) {
-            log.info("Nenhum campo especificado, adicionando apenas ID");
+            log.info("No fields specified, adding only ID");
         }
         
         return fieldInfoList;

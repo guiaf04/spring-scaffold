@@ -17,18 +17,18 @@ public class FileUtils {
             Path parentDir = path.getParent();
             if (parentDir != null && !Files.exists(parentDir)) {
                 Files.createDirectories(parentDir);
-                log.info("Diretórios criados: {}", parentDir);
+                log.info("Directories created: {}", parentDir);
             }
             if (Files.exists(path)) {
-                log.warn("Arquivo já existe: {}", filePath);
+                log.warn("File already exists: {}", filePath);
                 return false;
             }
             Files.write(path, content.getBytes(), StandardOpenOption.CREATE);
-            log.info("Arquivo criado: {}", filePath);
+            log.info("File created: {}", filePath);
             return true;
             
         } catch (IOException e) {
-            log.error("Erro ao criar arquivo: {}", filePath, e);
+            log.error("Error creating file: {}", filePath, e);
             return false;
         }
     }
@@ -74,11 +74,11 @@ public class FileUtils {
             Path path = Paths.get(directoryPath);
             if (!Files.exists(path)) {
                 Files.createDirectories(path);
-                log.info("Diretórios criados: {}", directoryPath);
+                log.info("Directories created: {}", directoryPath);
             }
             return true;
         } catch (IOException e) {
-            log.error("Erro ao criar diretórios: {}", directoryPath, e);
+            log.error("Error creating directories: {}", directoryPath, e);
             return false;
         }
     }
