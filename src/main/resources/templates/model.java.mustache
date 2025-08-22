@@ -1,0 +1,86 @@
+package {{packageName}};
+
+{{#imports}}
+import {{.}};
+{{/imports}}
+
+{{#includeJpa}}
+@Entity
+@Table(name = "{{tableName}}")
+{{/includeJpa}}
+{{#useLombok}}
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+{{/useLombok}}
+public class {{className}} {
+
+    {{#includeJpa}}
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    {{/includeJpa}}
+    private Long id;
+
+{{#fields}}
+    {{#includeJpa}}
+    {{#jpaAnnotation}}
+    {{{jpaAnnotation}}}
+    {{/jpaAnnotation}}
+    {{^jpaAnnotation}}
+    @Column
+    {{/jpaAnnotation}}
+    {{/includeJpa}}
+    {{#includeValidation}}
+    {{#validationAnnotations}}
+    {{{.}}}
+    {{/validationAnnotations}}
+    {{/includeValidation}}
+    private {{type}} {{name}};
+
+{{/fields}}
+{{^useLombok}}
+    // Getters and Setters
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+{{#fields}}
+    public {{type}} get{{capitalizedName}}() {
+        return {{name}};
+    }
+
+    public void set{{capitalizedName}}({{type}} {{name}}) {
+        this.{{name}} = {{name}};
+    }
+
+{{/fields}}
+    // Equals and HashCode
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        {{className}} that = ({{className}}) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    // ToString
+    @Override
+    public String toString() {
+        return "{{className}}{" +
+                "id=" + id +
+{{#fields}}
+                ", {{name}}=" + {{name}} +
+{{/fields}}
+                '}';
+    }
+{{/useLombok}}
+}

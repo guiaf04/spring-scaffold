@@ -1,0 +1,92 @@
+package {{packageName}};
+
+import {{modelPackage}}.{{modelName}};
+import {{repositoryPackage}}.{{repositoryName}};
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+{{#includeTransactional}}
+import org.springframework.transaction.annotation.Transactional;
+{{/includeTransactional}}
+
+import java.util.List;
+import java.util.Optional;
+
+@Service
+@RequiredArgsConstructor
+@Slf4j
+{{#includeTransactional}}
+@Transactional
+{{/includeTransactional}}
+public class {{serviceName}} {
+
+    private final {{repositoryName}} {{repositoryInstanceName}};
+
+{{#includeCrud}}
+    {{#includeTransactional}}
+    @Transactional(readOnly = true)
+    {{/includeTransactional}}
+    public List<{{modelName}}> findAll() {
+        log.debug("Buscando todos os {{modelInstanceName}}s");
+        return {{repositoryInstanceName}}.findAll();
+    }
+
+    {{#includeTransactional}}
+    @Transactional(readOnly = true)
+    {{/includeTransactional}}
+    public Page<{{modelName}}> findAll(Pageable pageable) {
+        log.debug("Buscando {{modelInstanceName}}s paginados: {}", pageable);
+        return {{repositoryInstanceName}}.findAll(pageable);
+    }
+
+    {{#includeTransactional}}
+    @Transactional(readOnly = true)
+    {{/includeTransactional}}
+    public Optional<{{modelName}}> findById(Long id) {
+        log.debug("Buscando {{modelInstanceName}} por ID: {}", id);
+        return {{repositoryInstanceName}}.findById(id);
+    }
+
+    public {{modelName}} save({{modelName}} {{modelInstanceName}}) {
+        log.debug("Salvando {{modelInstanceName}}: {}", {{modelInstanceName}});
+        {{#includeValidation}}
+        // Aqui você pode adicionar validações customizadas
+        {{/includeValidation}}
+        return {{repositoryInstanceName}}.save({{modelInstanceName}});
+    }
+
+    {{#includeTransactional}}
+    @Transactional(readOnly = true)
+    {{/includeTransactional}}
+    public boolean existsById(Long id) {
+        log.debug("Verificando se {{modelInstanceName}} existe por ID: {}", id);
+        return {{repositoryInstanceName}}.existsById(id);
+    }
+
+    public void deleteById(Long id) {
+        log.debug("Excluindo {{modelInstanceName}} por ID: {}", id);
+        {{repositoryInstanceName}}.deleteById(id);
+    }
+
+    public void delete({{modelName}} {{modelInstanceName}}) {
+        log.debug("Excluindo {{modelInstanceName}}: {}", {{modelInstanceName}});
+        {{repositoryInstanceName}}.delete({{modelInstanceName}});
+    }
+
+    {{#includeTransactional}}
+    @Transactional(readOnly = true)
+    {{/includeTransactional}}
+    public long count() {
+        log.debug("Contando total de {{modelInstanceName}}s");
+        return {{repositoryInstanceName}}.count();
+    }
+{{/includeCrud}}
+{{^includeCrud}}
+    public String basicOperation() {
+        log.info("Operação básica do {{serviceName}}");
+        return "{{serviceName}} funcionando!";
+    }
+{{/includeCrud}}
+}

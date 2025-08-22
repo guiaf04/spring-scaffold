@@ -1,0 +1,126 @@
+package {{packageName}};
+
+{{#includeSwagger}}
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+{{/includeSwagger}}
+{{#includeValidation}}
+import jakarta.validation.Valid;
+{{/includeValidation}}
+import {{modelPackage}}.{{modelName}};
+import {{servicePackage}}.{{serviceName}};
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Optional;
+
+@RestController
+@RequestMapping("{{basePath}}/{{resourcePath}}")
+@RequiredArgsConstructor
+@Slf4j
+{{#includeSwagger}}
+@Tag(name = "{{modelName}}", description = "API para gerenciamento de {{resourcePath}}")
+{{/includeSwagger}}
+public class {{controllerName}} {
+
+    private final {{serviceName}} {{serviceInstanceName}};
+
+    {{#includeCrud}}
+    @GetMapping
+    {{#includeSwagger}}
+    @Operation(summary = "Lista todos os {{modelName}}s")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Lista recuperada com sucesso"),
+        @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+    })
+    {{/includeSwagger}}
+    public ResponseEntity<List<{{modelName}}>> findAll() {
+        List<{{modelName}}> items = {{serviceInstanceName}}.findAll();
+        return ResponseEntity.ok(items);
+    }
+
+    @GetMapping("/{id}")
+    {{#includeSwagger}}
+    @Operation(summary = "Busca {{modelName}} por ID")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "{{modelName}} encontrado"),
+        @ApiResponse(responseCode = "404", description = "{{modelName}} não encontrado")
+    })
+    {{/includeSwagger}}
+    public ResponseEntity<{{modelName}}> findById(
+            {{#includeSwagger}}@Parameter(description = "ID do {{modelName}}"){{/includeSwagger}}
+            @PathVariable Long id) {
+        Optional<{{modelName}}> item = {{serviceInstanceName}}.findById(id);
+        return item.map(ResponseEntity::ok)
+                   .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PostMapping
+    {{#includeSwagger}}
+    @Operation(summary = "Cria novo {{modelName}}")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "201", description = "{{modelName}} criado com sucesso"),
+        @ApiResponse(responseCode = "400", description = "Dados inválidos")
+    })
+    {{/includeSwagger}}
+    public ResponseEntity<{{modelName}}> create(
+            {{#includeSwagger}}@Parameter(description = "Dados do {{modelName}}"){{/includeSwagger}}
+            {{#includeValidation}}@Valid{{/includeValidation}} @RequestBody {{modelName}} {{modelInstanceName}}) {
+        {{modelName}} savedItem = {{serviceInstanceName}}.save({{modelInstanceName}});
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedItem);
+    }
+
+    @PutMapping("/{id}")
+    {{#includeSwagger}}
+    @Operation(summary = "Atualiza {{modelName}} existente")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "{{modelName}} atualizado com sucesso"),
+        @ApiResponse(responseCode = "404", description = "{{modelName}} não encontrado"),
+        @ApiResponse(responseCode = "400", description = "Dados inválidos")
+    })
+    {{/includeSwagger}}
+    public ResponseEntity<{{modelName}}> update(
+            {{#includeSwagger}}@Parameter(description = "ID do {{modelName}}"){{/includeSwagger}}
+            @PathVariable Long id,
+            {{#includeSwagger}}@Parameter(description = "Dados atualizados do {{modelName}}"){{/includeSwagger}}
+            {{#includeValidation}}@Valid{{/includeValidation}} @RequestBody {{modelName}} {{modelInstanceName}}) {
+        
+        if (!{{serviceInstanceName}}.existsById(id)) {
+            return ResponseEntity.notFound().build();
+        }
+        
+        {{modelInstanceName}}.setId(id);
+        {{modelName}} updatedItem = {{serviceInstanceName}}.save({{modelInstanceName}});
+        return ResponseEntity.ok(updatedItem);
+    }
+
+    @DeleteMapping("/{id}")
+    {{#includeSwagger}}
+    @Operation(summary = "Remove {{modelName}} por ID")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "204", description = "{{modelName}} removido com sucesso"),
+        @ApiResponse(responseCode = "404", description = "{{modelName}} não encontrado")
+    })
+    {{/includeSwagger}}
+    public ResponseEntity<Void> delete(
+            {{#includeSwagger}}@Parameter(description = "ID do {{modelName}}"){{/includeSwagger}}
+            @PathVariable Long id) {
+        
+        if (!{{serviceInstanceName}}.existsById(id)) {
+            return ResponseEntity.notFound().build();
+        }
+        
+        {{serviceInstanceName}}.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
+    {{/includeCrud}}
+}
