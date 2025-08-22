@@ -11,9 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-/**
- * Comando para gerar classes Model/Entity
- */
 @Slf4j
 @Command(
     name = "model",
@@ -90,20 +87,12 @@ public class ModelCommand implements Callable<Integer> {
     public Integer call() throws Exception {
         try {
             log.info("🚀 Gerando model: {}", className);
-            
-            // Validar entrada
             if (className == null || className.trim().isEmpty()) {
                 System.err.println("❌ Nome da classe é obrigatório");
                 return 1;
             }
-
-            // Processar campos
             List<FieldInfo> fieldInfoList = parseFields();
-            
-            // Configurar gerador
             ModelGenerator generator = new ModelGenerator();
-            
-            // Gerar model
             boolean success = generator.generate(
                 className,
                 packageName,
@@ -132,9 +121,6 @@ public class ModelCommand implements Callable<Integer> {
         }
     }
 
-    /**
-     * Processa os campos fornecidos via linha de comando
-     */
     private List<FieldInfo> parseFields() {
         List<FieldInfo> fieldInfoList = new ArrayList<>();
         
@@ -154,8 +140,6 @@ public class ModelCommand implements Callable<Integer> {
                 }
             }
         }
-        
-        // Se não foram especificados campos, adicionar campo ID padrão
         if (fieldInfoList.isEmpty()) {
             log.info("Nenhum campo especificado, adicionando apenas ID");
         }

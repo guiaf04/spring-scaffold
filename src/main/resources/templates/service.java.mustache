@@ -14,9 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * Serviço para {{modelName}}
- */
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -28,9 +25,6 @@ public class {{serviceName}} {
     private final {{repositoryName}} {{repositoryInstanceName}};
 
 {{#includeCrud}}
-    /**
-     * Buscar todos os {{modelInstanceName}}s
-     */
     {{#includeTransactional}}
     @Transactional(readOnly = true)
     {{/includeTransactional}}
@@ -39,9 +33,6 @@ public class {{serviceName}} {
         return {{repositoryInstanceName}}.findAll();
     }
 
-    /**
-     * Buscar {{modelInstanceName}}s com paginação
-     */
     {{#includeTransactional}}
     @Transactional(readOnly = true)
     {{/includeTransactional}}
@@ -50,9 +41,6 @@ public class {{serviceName}} {
         return {{repositoryInstanceName}}.findAll(pageable);
     }
 
-    /**
-     * Buscar {{modelInstanceName}} por ID
-     */
     {{#includeTransactional}}
     @Transactional(readOnly = true)
     {{/includeTransactional}}
@@ -61,9 +49,6 @@ public class {{serviceName}} {
         return {{repositoryInstanceName}}.findById(id);
     }
 
-    /**
-     * Salvar {{modelInstanceName}}
-     */
     public {{modelName}} save({{modelName}} {{modelInstanceName}}) {
         log.debug("Salvando {{modelInstanceName}}: {}", {{modelInstanceName}});
         {{#includeValidation}}
@@ -72,9 +57,6 @@ public class {{serviceName}} {
         return {{repositoryInstanceName}}.save({{modelInstanceName}});
     }
 
-    /**
-     * Verificar se {{modelInstanceName}} existe por ID
-     */
     {{#includeTransactional}}
     @Transactional(readOnly = true)
     {{/includeTransactional}}
@@ -83,25 +65,16 @@ public class {{serviceName}} {
         return {{repositoryInstanceName}}.existsById(id);
     }
 
-    /**
-     * Excluir {{modelInstanceName}} por ID
-     */
     public void deleteById(Long id) {
         log.debug("Excluindo {{modelInstanceName}} por ID: {}", id);
         {{repositoryInstanceName}}.deleteById(id);
     }
 
-    /**
-     * Excluir {{modelInstanceName}}
-     */
     public void delete({{modelName}} {{modelInstanceName}}) {
         log.debug("Excluindo {{modelInstanceName}}: {}", {{modelInstanceName}});
         {{repositoryInstanceName}}.delete({{modelInstanceName}});
     }
 
-    /**
-     * Contar total de {{modelInstanceName}}s
-     */
     {{#includeTransactional}}
     @Transactional(readOnly = true)
     {{/includeTransactional}}
@@ -111,9 +84,6 @@ public class {{serviceName}} {
     }
 {{/includeCrud}}
 {{^includeCrud}}
-    /**
-     * Método básico para demonstrar o serviço
-     */
     public String basicOperation() {
         log.info("Operação básica do {{serviceName}}");
         return "{{serviceName}} funcionando!";

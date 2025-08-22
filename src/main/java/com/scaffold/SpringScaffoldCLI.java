@@ -5,13 +5,6 @@ import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
-/**
- * Classe principal do Spring Scaffold CLI
- * 
- * Aplicativo de linha de comando para auxiliar na construção de aplicações 
- * Java e Spring Boot, oferecendo geração automática de scaffold para models, 
- * controllers, services, repositories e templates de projeto.
- */
 @Command(
     name = "spring-scaffold",
     mixinStandardHelpOptions = true,
@@ -64,19 +57,13 @@ public class SpringScaffoldCLI implements Runnable {
 
     @Override
     public void run() {
-        // Quando executado sem subcomandos, mostra ajuda
         CommandLine.usage(this, System.out);
     }
 
-    /**
-     * Método principal de entrada da aplicação
-     */
     public static void main(String[] args) {
-        // Cria instância do CommandLine com tratamento de cores
         CommandLine commandLine = new CommandLine(new SpringScaffoldCLI())
             .setColorScheme(createColorScheme());
 
-        // Configura tratamento de erros personalizado
         commandLine.setExecutionExceptionHandler((ex, cmd, parseResult) -> {
             cmd.getErr().println(cmd.getColorScheme().errorText("❌ Erro: " + ex.getMessage()));
             if (parseResult.hasMatchedOption("--verbose")) {
@@ -85,16 +72,11 @@ public class SpringScaffoldCLI implements Runnable {
             return 1;
         });
 
-        // Executa o comando e obtém código de saída
         int exitCode = commandLine.execute(args);
         
-        // Sai com o código apropriado
         System.exit(exitCode);
     }
 
-    /**
-     * Cria esquema de cores personalizado para o CLI
-     */
     private static CommandLine.Help.ColorScheme createColorScheme() {
         return new CommandLine.Help.ColorScheme.Builder()
             .commands(CommandLine.Help.Ansi.Style.bold, CommandLine.Help.Ansi.Style.fg_blue)

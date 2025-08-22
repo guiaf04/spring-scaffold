@@ -8,9 +8,6 @@ import picocli.CommandLine.Parameters;
 
 import java.util.concurrent.Callable;
 
-/**
- * Comando para gerar classes Service
- */
 @Slf4j
 @Command(
     name = "service",
@@ -97,23 +94,15 @@ public class ServiceCommand implements Callable<Integer> {
     public Integer call() throws Exception {
         try {
             log.info("🚀 Gerando service: {}", serviceName);
-            
-            // Validar entrada
             if (serviceName == null || serviceName.trim().isEmpty()) {
                 System.err.println("❌ Nome do service é obrigatório");
                 return 1;
             }
-
-            // Se não especificado, inferir model do nome do service
             if (modelName == null || modelName.trim().isEmpty()) {
                 modelName = inferModelName(serviceName);
                 log.info("Model inferido: {}", modelName);
             }
-
-            // Configurar gerador
             ServiceGenerator generator = new ServiceGenerator();
-            
-            // Gerar service
             boolean success = generator.generate(
                 serviceName,
                 packageName,
@@ -154,10 +143,6 @@ public class ServiceCommand implements Callable<Integer> {
         }
     }
 
-    /**
-     * Infere o nome do model a partir do nome do service
-     * Ex: UserService -> User, ProductService -> Product
-     */
     private String inferModelName(String serviceName) {
         if (serviceName.endsWith("Service")) {
             return serviceName.substring(0, serviceName.length() - 7);

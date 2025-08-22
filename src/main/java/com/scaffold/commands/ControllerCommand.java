@@ -8,9 +8,6 @@ import picocli.CommandLine.Parameters;
 
 import java.util.concurrent.Callable;
 
-/**
- * Comando para gerar Controllers REST
- */
 @Slf4j
 @Command(
     name = "controller",
@@ -97,23 +94,15 @@ public class ControllerCommand implements Callable<Integer> {
     public Integer call() throws Exception {
         try {
             log.info("🚀 Gerando controller: {}", controllerName);
-            
-            // Validar entrada
             if (controllerName == null || controllerName.trim().isEmpty()) {
                 System.err.println("❌ Nome do controller é obrigatório");
                 return 1;
             }
-
-            // Se não especificado, inferir model do nome do controller
             if (modelName == null || modelName.trim().isEmpty()) {
                 modelName = inferModelName(controllerName);
                 log.info("Model inferido: {}", modelName);
             }
-
-            // Configurar gerador
             ControllerGenerator generator = new ControllerGenerator();
-            
-            // Gerar controller
             boolean success = generator.generate(
                 controllerName,
                 packageName,
@@ -151,10 +140,6 @@ public class ControllerCommand implements Callable<Integer> {
         }
     }
 
-    /**
-     * Infere o nome do model a partir do nome do controller
-     * Ex: UserController -> User, ProductController -> Product
-     */
     private String inferModelName(String controllerName) {
         if (controllerName.endsWith("Controller")) {
             return controllerName.substring(0, controllerName.length() - 10);

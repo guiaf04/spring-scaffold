@@ -7,9 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Gerador de Controllers REST
- */
 @Slf4j
 public class ControllerGenerator {
 
@@ -34,7 +31,6 @@ public class ControllerGenerator {
         try {
             log.info("Gerando controller {} no pacote {}", controllerName, packageName);
             
-            // Preparar contexto para o template
             Map<String, Object> context = new HashMap<>();
             context.put("packageName", packageName);
             context.put("controllerName", controllerName);
@@ -46,11 +42,10 @@ public class ControllerGenerator {
             context.put("includeSwagger", includeSwagger);
             context.put("includeValidation", includeValidation);
             
-            // Calcular nomes derivados
             String serviceName = modelName + "Service";
             String serviceInstanceName = Character.toLowerCase(serviceName.charAt(0)) + serviceName.substring(1);
             String modelInstanceName = Character.toLowerCase(modelName.charAt(0)) + modelName.substring(1);
-            String resourcePath = modelInstanceName + "s"; // pluralizar
+            String resourcePath = modelInstanceName + "s";
             
             context.put("serviceName", serviceName);
             context.put("serviceInstanceName", serviceInstanceName);
@@ -65,15 +60,12 @@ public class ControllerGenerator {
             log.info("- Resource Path: {}", resourcePath);
             log.info("- Base Path: {}", basePath);
             
-            // Gerar código usando template
             String code = templateEngine.processTemplate("controller.java.mustache", context);
             
-            // Criar estrutura de diretórios
             String packagePath = packageName.replace(".", "/");
             String fullPath = outputDirectory + "/src/main/java/" + packagePath;
             FileUtils.createDirectories(fullPath);
             
-            // Escrever arquivo
             String fileName = fullPath + "/" + controllerName + ".java";
             FileUtils.createFile(fileName, code);
             

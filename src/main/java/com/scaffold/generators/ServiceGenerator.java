@@ -34,7 +34,6 @@ public class ServiceGenerator {
         try {
             log.info("Gerando service {} no pacote {}", serviceName, packageName);
             
-            // Preparar contexto para os templates
             Map<String, Object> context = new HashMap<>();
             context.put("packageName", packageName);
             context.put("serviceName", serviceName);
@@ -46,7 +45,7 @@ public class ServiceGenerator {
             context.put("includeTransactional", includeTransactional);
             context.put("includeValidation", includeValidation);
             
-            // Calcular nomes derivados
+            
             String repositoryName = modelName + "Repository";
             String repositoryInstanceName = Character.toLowerCase(repositoryName.charAt(0)) + repositoryName.substring(1);
             String modelInstanceName = Character.toLowerCase(modelName.charAt(0)) + modelName.substring(1);
@@ -72,20 +71,20 @@ public class ServiceGenerator {
             
             boolean success = true;
             
-            // Gerar interface se solicitado
+            
             if (generateInterface) {
                 String interfaceCode = templateEngine.processTemplate("service-interface.java.mustache", context);
                 String interfaceFileName = fullPath + "/" + interfaceName + ".java";
                 FileUtils.createFile(interfaceFileName, interfaceCode);
                 log.info("Interface {} gerada em {}", interfaceName, interfaceFileName);
                 
-                // Gerar implementação
+                
                 String implCode = templateEngine.processTemplate("service-impl.java.mustache", context);
                 String implFileName = fullPath + "/" + implementationName + ".java";
                 FileUtils.createFile(implFileName, implCode);
                 log.info("Implementação {} gerada em {}", implementationName, implFileName);
             } else {
-                // Gerar apenas a classe service
+                
                 String serviceCode = templateEngine.processTemplate("service.java.mustache", context);
                 String serviceFileName = fullPath + "/" + serviceName + ".java";
                 FileUtils.createFile(serviceFileName, serviceCode);

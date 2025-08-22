@@ -9,9 +9,6 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.Map;
 
-/**
- * Engine de templates usando Mustache
- */
 @Slf4j
 public class TemplateEngine {
 
@@ -21,9 +18,6 @@ public class TemplateEngine {
         this.mustacheFactory = new DefaultMustacheFactory("templates/");
     }
 
-    /**
-     * Processa um template com o contexto fornecido
-     */
     public String processTemplate(String templateName, Map<String, Object> context) {
         try {
             Mustache mustache = mustacheFactory.compile(templateName);
@@ -36,9 +30,6 @@ public class TemplateEngine {
         }
     }
 
-    /**
-     * Processa template a partir de string (útil para templates inline)
-     */
     public String processTemplateString(String templateContent, Map<String, Object> context) {
         try {
             Mustache mustache = mustacheFactory.compile(new StringReader(templateContent), "inline");

@@ -10,9 +10,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Gerador de projetos Spring Boot
- */
 @Slf4j
 public class ProjectGenerator {
 
@@ -38,8 +35,6 @@ public class ProjectGenerator {
         
         try {
             log.info("Criando projeto Spring Boot: {}", projectName);
-            
-            // Preparar contexto para os templates
             Map<String, Object> context = new HashMap<>();
             context.put("projectName", projectName);
             context.put("basePackage", basePackage);
@@ -52,15 +47,11 @@ public class ProjectGenerator {
             context.put("includeDocker", includeDocker);
             context.put("includeGitignore", includeGitignore);
             context.put("includeReadme", includeReadme);
-            
-            // Calcular nomes derivados
             String mainClassName = toPascalCase(projectName) + "Application";
             String artifactId = toKebabCase(projectName);
             
             context.put("mainClassName", mainClassName);
             context.put("artifactId", artifactId);
-            
-            // Configurações específicas do banco
             Map<String, Object> dbConfig = getDatabaseConfig(database);
             context.putAll(dbConfig);
             
@@ -71,8 +62,6 @@ public class ProjectGenerator {
             log.info("- Banco: {}", database);
             
             String projectPath = outputDirectory + "/" + artifactId;
-            
-            // Gerar estrutura do projeto
             generateProjectStructure(projectPath, basePackage, context);
             
             log.info("Projeto {} criado com sucesso em {}", projectName, projectPath);
@@ -85,7 +74,7 @@ public class ProjectGenerator {
     }
     
     private void generateProjectStructure(String projectPath, String basePackage, Map<String, Object> context) {
-        // Criar estrutura de diretórios
+        
         String srcMainJava = projectPath + "/src/main/java/" + basePackage.replace(".", "/");
         String srcMainResources = projectPath + "/src/main/resources";
         String srcTestJava = projectPath + "/src/test/java/" + basePackage.replace(".", "/");
@@ -93,24 +82,14 @@ public class ProjectGenerator {
         FileUtils.createDirectories(srcMainJava);
         FileUtils.createDirectories(srcMainResources);
         FileUtils.createDirectories(srcTestJava);
-        
-        // Gerar pom.xml
         String pomContent = templateEngine.processTemplate("project-pom.xml.mustache", context);
         FileUtils.createFile(projectPath + "/pom.xml", pomContent);
-        
-        // Gerar classe principal
         String mainClassContent = templateEngine.processTemplate("project-main.java.mustache", context);
         FileUtils.createFile(srcMainJava + "/" + context.get("mainClassName") + ".java", mainClassContent);
-        
-        // Gerar application.properties
         String propsContent = templateEngine.processTemplate("project-application.properties.mustache", context);
         FileUtils.createFile(srcMainResources + "/application.properties", propsContent);
-        
-        // Gerar test
         String testContent = templateEngine.processTemplate("project-test.java.mustache", context);
         FileUtils.createFile(srcTestJava + "/" + context.get("mainClassName") + "Tests.java", testContent);
-        
-        // Arquivos opcionais
         if ((Boolean) context.get("includeDocker")) {
             String dockerContent = templateEngine.processTemplate("project-dockerfile.mustache", context);
             FileUtils.createFile(projectPath + "/Dockerfile", dockerContent);

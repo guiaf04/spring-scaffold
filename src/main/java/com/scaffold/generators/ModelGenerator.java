@@ -8,9 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.*;
 import java.util.stream.Collectors;
 
-/**
- * Gerador de classes Model/Entity
- */
 @Slf4j
 public class ModelGenerator {
 
@@ -79,9 +76,6 @@ public class ModelGenerator {
         }
     }
 
-    /**
-     * Prepara o contexto para o template Mustache
-     */
     private Map<String, Object> prepareTemplateContext(
             String className,
             String packageName,
@@ -114,9 +108,6 @@ public class ModelGenerator {
         return context;
     }
 
-    /**
-     * Processa um campo individual para o template
-     */
     private Map<String, Object> processField(FieldInfo field) {
         Map<String, Object> fieldMap = new HashMap<>();
         fieldMap.put("name", field.getName());
@@ -138,9 +129,6 @@ public class ModelGenerator {
         return fieldMap;
     }
 
-    /**
-     * Coleta todos os imports necessários
-     */
     private Set<String> collectImports(List<FieldInfo> fields, boolean includeJpa, boolean includeValidation, boolean useLombok) {
         Set<String> imports = new HashSet<>();
         
@@ -174,9 +162,6 @@ public class ModelGenerator {
         return imports;
     }
 
-    /**
-     * Capitaliza a primeira letra de uma string
-     */
     private String capitalize(String str) {
         if (str == null || str.isEmpty()) {
             return str;
@@ -184,10 +169,6 @@ public class ModelGenerator {
         return str.substring(0, 1).toUpperCase() + str.substring(1);
     }
 
-    /**
-     * Infere o nome da tabela a partir do nome da classe
-     * Ex: User -> users, ProductCategory -> product_categories
-     */
     private String inferTableName(String className) {
         // Converter CamelCase para snake_case e pluralizar
         String snakeCase = className.replaceAll("([a-z])([A-Z])", "$1_$2").toLowerCase();

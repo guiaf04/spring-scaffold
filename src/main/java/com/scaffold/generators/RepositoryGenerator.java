@@ -8,9 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Gerador de interfaces Repository
- */
 @Slf4j
 public class RepositoryGenerator {
 
@@ -33,8 +30,6 @@ public class RepositoryGenerator {
         
         try {
             log.info("Gerando repository {} no pacote {}", repositoryName, packageName);
-            
-            // Preparar contexto para o template
             Map<String, Object> context = new HashMap<>();
             context.put("packageName", packageName);
             context.put("repositoryName", repositoryName);
@@ -44,12 +39,8 @@ public class RepositoryGenerator {
             context.put("idType", idType);
             context.put("includeCustomQueries", includeCustomQueries);
             context.put("includePagination", includePagination);
-            
-            // Calcular nomes e tipos derivados
             String modelInstanceName = Character.toLowerCase(modelName.charAt(0)) + modelName.substring(1);
             context.put("modelInstanceName", modelInstanceName);
-            
-            // Determinar o tipo base do repository
             String baseType;
             switch (repositoryType) {
                 case JPA:
@@ -75,16 +66,10 @@ public class RepositoryGenerator {
             log.info("- Model: {}", modelName);
             log.info("- Tipo Base: {}", baseType);
             log.info("- Tipo ID: {}", idType);
-            
-            // Gerar código usando template
             String code = templateEngine.processTemplate("repository.java.mustache", context);
-            
-            // Criar estrutura de diretórios
             String packagePath = packageName.replace(".", "/");
             String fullPath = outputDirectory + "/src/main/java/" + packagePath;
             FileUtils.createDirectories(fullPath);
-            
-            // Escrever arquivo
             String fileName = fullPath + "/" + repositoryName + ".java";
             FileUtils.createFile(fileName, code);
             

@@ -15,41 +15,23 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * Repository para {{modelName}}
- */
 @Repository
 public interface {{repositoryName}} extends {{baseType}}<{{modelName}}, {{idType}}> {
 
 {{#includeCustomQueries}}
-    /**
-     * Buscar {{modelInstanceName}}s por nome (exemplo de query customizada)
-     */
     @Query("SELECT m FROM {{modelName}} m WHERE LOWER(m.name) LIKE LOWER(CONCAT('%', :name, '%'))")
     List<{{modelName}}> findByNameContainingIgnoreCase(@Param("name") String name);
 
-    /**
-     * Buscar {{modelInstanceName}}s ativos (exemplo de query customizada)
-     */
     @Query("SELECT m FROM {{modelName}} m WHERE m.active = true")
     List<{{modelName}}> findActiveItems();
 
-    /**
-     * Contar {{modelInstanceName}}s ativos
-     */
     @Query("SELECT COUNT(m) FROM {{modelName}} m WHERE m.active = true")
     Long countActiveItems();
 
     {{#includePagination}}
-    /**
-     * Buscar {{modelInstanceName}}s por nome com paginação
-     */
     @Query("SELECT m FROM {{modelName}} m WHERE LOWER(m.name) LIKE LOWER(CONCAT('%', :name, '%'))")
     Page<{{modelName}}> findByNameContainingIgnoreCase(@Param("name") String name, Pageable pageable);
 
-    /**
-     * Buscar {{modelInstanceName}}s ativos com paginação
-     */
     @Query("SELECT m FROM {{modelName}} m WHERE m.active = true")
     Page<{{modelName}}> findActiveItems(Pageable pageable);
     {{/includePagination}}

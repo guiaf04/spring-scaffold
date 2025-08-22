@@ -8,9 +8,6 @@ import picocli.CommandLine.Parameters;
 
 import java.util.concurrent.Callable;
 
-/**
- * Comando para gerar novos projetos Spring Boot
- */
 @Slf4j
 @Command(
     name = "project",
@@ -111,16 +108,10 @@ public class ProjectCommand implements Callable<Integer> {
     )
     private String outputDirectory = ".";
 
-    /**
-     * Enum para tipos de banco suportados
-     */
     public enum DatabaseType {
         H2, MYSQL, POSTGRESQL, MONGODB, SQLSERVER
     }
 
-    /**
-     * Enum para tipos de empacotamento
-     */
     public enum PackagingType {
         JAR, WAR
     }
@@ -129,22 +120,14 @@ public class ProjectCommand implements Callable<Integer> {
     public Integer call() throws Exception {
         try {
             log.info("🚀 Criando projeto Spring Boot: {}", projectName);
-            
-            // Validar entrada
             if (projectName == null || projectName.trim().isEmpty()) {
                 System.err.println("❌ Nome do projeto é obrigatório");
                 return 1;
             }
-
-            // Se groupId não foi especificado, usar o basePackage
             if (groupId == null || groupId.trim().isEmpty()) {
                 groupId = basePackage;
             }
-
-            // Configurar gerador
             ProjectGenerator generator = new ProjectGenerator();
-            
-            // Gerar projeto
             boolean success = generator.generate(
                 projectName,
                 basePackage,

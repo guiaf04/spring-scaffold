@@ -23,9 +23,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * Controller REST para {{modelName}}
- */
 @RestController
 @RequestMapping("{{basePath}}/{{resourcePath}}")
 @RequiredArgsConstructor
@@ -38,9 +35,6 @@ public class {{controllerName}} {
     private final {{serviceName}} {{serviceInstanceName}};
 
     {{#includeCrud}}
-    /**
-     * Lista todos os {{modelName}}s
-     */
     @GetMapping
     {{#includeSwagger}}
     @Operation(summary = "Lista todos os {{modelName}}s")
@@ -54,9 +48,6 @@ public class {{controllerName}} {
         return ResponseEntity.ok(items);
     }
 
-    /**
-     * Busca {{modelName}} por ID
-     */
     @GetMapping("/{id}")
     {{#includeSwagger}}
     @Operation(summary = "Busca {{modelName}} por ID")
@@ -73,9 +64,6 @@ public class {{controllerName}} {
                    .orElse(ResponseEntity.notFound().build());
     }
 
-    /**
-     * Cria novo {{modelName}}
-     */
     @PostMapping
     {{#includeSwagger}}
     @Operation(summary = "Cria novo {{modelName}}")
@@ -91,9 +79,6 @@ public class {{controllerName}} {
         return ResponseEntity.status(HttpStatus.CREATED).body(savedItem);
     }
 
-    /**
-     * Atualiza {{modelName}} existente
-     */
     @PutMapping("/{id}")
     {{#includeSwagger}}
     @Operation(summary = "Atualiza {{modelName}} existente")
@@ -118,9 +103,6 @@ public class {{controllerName}} {
         return ResponseEntity.ok(updatedItem);
     }
 
-    /**
-     * Remove {{modelName}} por ID
-     */
     @DeleteMapping("/{id}")
     {{#includeSwagger}}
     @Operation(summary = "Remove {{modelName}} por ID")

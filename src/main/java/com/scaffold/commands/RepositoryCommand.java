@@ -8,9 +8,6 @@ import picocli.CommandLine.Parameters;
 
 import java.util.concurrent.Callable;
 
-/**
- * Comando para gerar interfaces Repository
- */
 @Slf4j
 @Command(
     name = "repository",
@@ -86,9 +83,6 @@ public class RepositoryCommand implements Callable<Integer> {
     )
     private String outputDirectory = ".";
 
-    /**
-     * Enum para tipos de repository suportados
-     */
     public enum RepositoryType {
         JPA, MONGODB, REACTIVE_MONGO, REACTIVE_R2DBC
     }
@@ -97,23 +91,15 @@ public class RepositoryCommand implements Callable<Integer> {
     public Integer call() throws Exception {
         try {
             log.info("🚀 Gerando repository: {}", repositoryName);
-            
-            // Validar entrada
             if (repositoryName == null || repositoryName.trim().isEmpty()) {
                 System.err.println("❌ Nome do repository é obrigatório");
                 return 1;
             }
-
-            // Se não especificado, inferir model do nome do repository
             if (modelName == null || modelName.trim().isEmpty()) {
                 modelName = inferModelName(repositoryName);
                 log.info("Model inferido: {}", modelName);
             }
-
-            // Configurar gerador
             RepositoryGenerator generator = new RepositoryGenerator();
-            
-            // Gerar repository
             boolean success = generator.generate(
                 repositoryName,
                 packageName,
@@ -150,10 +136,6 @@ public class RepositoryCommand implements Callable<Integer> {
         }
     }
 
-    /**
-     * Infere o nome do model a partir do nome do repository
-     * Ex: UserRepository -> User, ProductRepository -> Product
-     */
     private String inferModelName(String repositoryName) {
         if (repositoryName.endsWith("Repository")) {
             return repositoryName.substring(0, repositoryName.length() - 10);

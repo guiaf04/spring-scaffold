@@ -7,50 +7,23 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * Interface do serviço para {{modelName}}
- */
 public interface {{interfaceName}} {
 
 {{#includeCrud}}
-    /**
-     * Buscar todos os {{modelInstanceName}}s
-     */
     List<{{modelName}}> findAll();
 
-    /**
-     * Buscar {{modelInstanceName}}s com paginação
-     */
     Page<{{modelName}}> findAll(Pageable pageable);
 
-    /**
-     * Buscar {{modelInstanceName}} por ID
-     */
     Optional<{{modelName}}> findById(Long id);
 
-    /**
-     * Salvar {{modelInstanceName}}
-     */
     {{modelName}} save({{modelName}} {{modelInstanceName}});
 
-    /**
-     * Verificar se {{modelInstanceName}} existe por ID
-     */
     boolean existsById(Long id);
 
-    /**
-     * Excluir {{modelInstanceName}} por ID
-     */
     void deleteById(Long id);
 
-    /**
-     * Excluir {{modelInstanceName}}
-     */
     void delete({{modelName}} {{modelInstanceName}});
 
-    /**
-     * Contar total de {{modelInstanceName}}s
-     */
     long count();
 {{/includeCrud}}
 }
