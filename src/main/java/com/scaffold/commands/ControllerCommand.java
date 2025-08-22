@@ -30,27 +30,27 @@ public class ControllerCommand implements Callable<Integer> {
     private String controllerName;
 
     @Option(
-        names = {"-p", "--package"},
+        names = {"-p", "--package", "--pkg"},
         description = "Pacote do controller (padrão: ${DEFAULT-VALUE})",
         defaultValue = "com.example.controller"
     )
     private String packageName;
 
     @Option(
-        names = {"-m", "--model"},
+        names = {"-m", "--model", "--entity"},
         description = "Nome da classe model associada (ex: User, Product)"
     )
     private String modelName;
 
     @Option(
-        names = {"--model-package"},
+        names = {"--model-package", "--model-pkg"},
         description = "Pacote da classe model (padrão: ${DEFAULT-VALUE})",
         defaultValue = "com.example.model"
     )
     private String modelPackage;
 
     @Option(
-        names = {"--service-package"},
+        names = {"--service-package", "--service-pkg"},
         description = "Pacote da classe service (padrão: ${DEFAULT-VALUE})",
         defaultValue = "com.example.service"
     )

@@ -30,34 +30,34 @@ public class ProjectCommand implements Callable<Integer> {
     private String projectName;
 
     @Option(
-        names = {"--package"},
+        names = {"--package", "--pkg", "-p"},
         description = "Pacote base do projeto (padrão: ${DEFAULT-VALUE})",
         defaultValue = "com.example"
     )
     private String basePackage;
 
     @Option(
-        names = {"--group-id"},
+        names = {"--group-id", "--group", "-g"},
         description = "Group ID do Maven (padrão: valor do --package)"
     )
     private String groupId;
 
     @Option(
-        names = {"--spring-version"},
+        names = {"--spring-version", "--spring", "-s"},
         description = "Versão do Spring Boot (padrão: ${DEFAULT-VALUE})",
         defaultValue = "3.2.0"
     )
     private String springBootVersion;
 
     @Option(
-        names = {"--java-version"},
+        names = {"--java-version", "--java", "-j"},
         description = "Versão do Java (padrão: ${DEFAULT-VALUE})",
         defaultValue = "17"
     )
     private String javaVersion;
 
     @Option(
-        names = {"--dependencies"},
+        names = {"--dependencies", "--deps", "-d"},
         description = {
             "Dependências separadas por vírgula.",
             "Opções: web, jpa, security, validation, actuator, test, devtools, lombok, h2, mysql, postgresql, mongodb",
@@ -68,7 +68,7 @@ public class ProjectCommand implements Callable<Integer> {
     private String[] dependencies = {"web", "jpa", "test"};
 
     @Option(
-        names = {"--database"},
+        names = {"--database", "--db"},
         description = "Tipo de banco: ${COMPLETION-CANDIDATES} (padrão: ${DEFAULT-VALUE})",
         defaultValue = "H2"
     )

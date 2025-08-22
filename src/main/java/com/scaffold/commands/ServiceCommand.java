@@ -30,27 +30,27 @@ public class ServiceCommand implements Callable<Integer> {
     private String serviceName;
 
     @Option(
-        names = {"-p", "--package"},
+        names = {"-p", "--package", "--pkg"},
         description = "Pacote do service (padrão: ${DEFAULT-VALUE})",
         defaultValue = "com.example.service"
     )
     private String packageName;
 
     @Option(
-        names = {"-m", "--model"},
+        names = {"-m", "--model", "--entity"},
         description = "Nome da classe model associada (ex: User, Product)"
     )
     private String modelName;
 
     @Option(
-        names = {"--model-package"},
+        names = {"--model-package", "--model-pkg"},
         description = "Pacote da classe model (padrão: ${DEFAULT-VALUE})",
         defaultValue = "com.example.model"
     )
     private String modelPackage;
 
     @Option(
-        names = {"--repository-package"},
+        names = {"--repository-package", "--repo-pkg"},
         description = "Pacote da classe repository (padrão: ${DEFAULT-VALUE})",
         defaultValue = "com.example.repository"
     )

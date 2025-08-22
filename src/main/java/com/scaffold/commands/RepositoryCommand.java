@@ -30,27 +30,27 @@ public class RepositoryCommand implements Callable<Integer> {
     private String repositoryName;
 
     @Option(
-        names = {"-p", "--package"},
+        names = {"-p", "--package", "--pkg"},
         description = "Pacote do repository (padrão: ${DEFAULT-VALUE})",
         defaultValue = "com.example.repository"
     )
     private String packageName;
 
     @Option(
-        names = {"-m", "--model"},
+        names = {"-m", "--model", "--entity"},
         description = "Nome da classe model associada (ex: User, Product)"
     )
     private String modelName;
 
     @Option(
-        names = {"--model-package"},
+        names = {"--model-package", "--model-pkg"},
         description = "Pacote da classe model (padrão: ${DEFAULT-VALUE})",
         defaultValue = "com.example.model"
     )
     private String modelPackage;
 
     @Option(
-        names = {"--type"},
+        names = {"--type", "-t"},
         description = "Tipo de repository: ${COMPLETION-CANDIDATES} (padrão: ${DEFAULT-VALUE})",
         defaultValue = "JPA"
     )

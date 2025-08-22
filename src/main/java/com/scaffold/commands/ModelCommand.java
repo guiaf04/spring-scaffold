@@ -19,8 +19,8 @@ import java.util.concurrent.Callable;
         "",
         "@|underline Exemplos:|@",
         "  @|yellow spring-scaffold model User|@",
-        "  @|yellow spring-scaffold model Product -f \"name:String,price:BigDecimal\"|@",
-        "  @|yellow spring-scaffold model Customer -p com.example.entity --table customers|@"
+        "  @|yellow spring-scaffold model Product name:String price:BigDecimal|@",
+        "  @|yellow spring-scaffold model Customer --pkg com.example.entity|@"
     },
     mixinStandardHelpOptions = true
 )
@@ -32,8 +32,15 @@ public class ModelCommand implements Callable<Integer> {
     )
     private String className;
 
+    @Parameters(
+        index = "1..*",
+        arity = "0..*",
+        description = "Campos no formato 'nome:tipo' (ex: name:String age:Integer)"
+    )
+    private List<String> fieldParams = new ArrayList<>();
+
     @Option(
-        names = {"-p", "--package"},
+        names = {"-p", "--package", "--pkg"},
         description = "Pacote da classe (padrão: ${DEFAULT-VALUE})",
         defaultValue = "com.example.model"
     )
@@ -42,7 +49,7 @@ public class ModelCommand implements Callable<Integer> {
     @Option(
         names = {"-f", "--fields"},
         description = {
-            "Lista de campos no formato 'nome:tipo,nome:tipo'",
+            "Lista de campos no formato 'nome:tipo,nome:tipo' (alternativa aos parâmetros posicionais)",
             "Tipos suportados: String, Integer, Long, Boolean, BigDecimal, LocalDate, LocalDateTime",
             "Exemplo: 'name:String,age:Integer,active:Boolean'"
         },
@@ -51,34 +58,34 @@ public class ModelCommand implements Callable<Integer> {
     private String[] fields = {};
 
     @Option(
-        names = {"-t", "--table"},
+        names = {"-t", "--table", "--tbl"},
         description = "Nome da tabela no banco (padrão: nome da classe em snake_case)"
     )
     private String tableName;
 
     @Option(
-        names = {"--jpa"},
+        names = {"--jpa", "--entity"},
         description = "Incluir annotations JPA (@Entity, @Table, etc.) (padrão: ${DEFAULT-VALUE})",
         defaultValue = "true"
     )
     private boolean includeJpa;
 
     @Option(
-        names = {"--lombok"},
+        names = {"--lombok", "--data"},
         description = "Usar Lombok annotations (@Data, @Entity, etc.) (padrão: ${DEFAULT-VALUE})",
         defaultValue = "true"
     )
     private boolean useLombok;
 
     @Option(
-        names = {"--validation"},
+        names = {"--validation", "--valid"},
         description = "Incluir Bean Validation annotations (padrão: ${DEFAULT-VALUE})",
         defaultValue = "false"
     )
     private boolean includeValidation;
 
     @Option(
-        names = {"-o", "--output"},
+        names = {"-o", "--output", "--out"},
         description = "Diretório de saída (padrão: diretório atual)"
     )
     private String outputDirectory = ".";
@@ -124,7 +131,19 @@ public class ModelCommand implements Callable<Integer> {
     private List<FieldInfo> parseFields() {
         List<FieldInfo> fieldInfoList = new ArrayList<>();
         
-        for (String field : fields) {
+        List<String> allFields = new ArrayList<>();
+        
+        if (fieldParams != null && !fieldParams.isEmpty()) {
+            allFields.addAll(fieldParams);
+        }
+        
+        if (fields != null && fields.length > 0) {
+            for (String field : fields) {
+                allFields.add(field);
+            }
+        }
+        
+        for (String field : allFields) {
             if (field != null && !field.trim().isEmpty()) {
                 String[] parts = field.split(":");
                 if (parts.length == 2) {
@@ -140,6 +159,7 @@ public class ModelCommand implements Callable<Integer> {
                 }
             }
         }
+        
         if (fieldInfoList.isEmpty()) {
             log.info("Nenhum campo especificado, adicionando apenas ID");
         }
