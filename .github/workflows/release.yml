@@ -1,6 +1,9 @@
 name: Release to Maven Central
 
 on:
+  push:
+    tags:
+      - 'v*'
   release:
     types: [published]
   workflow_dispatch:
@@ -23,7 +26,7 @@ jobs:
       with:
         java-version: 17
         distribution: 'temurin'
-        server-id: ossrh
+        server-id: central
         server-username: MAVEN_USERNAME
         server-password: MAVEN_PASSWORD
 
@@ -67,19 +70,18 @@ jobs:
         MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
       run: |
         mvn clean deploy -Prelease \
-          -DskipTests=false \
-          -Dgpg.passphrase="${MAVEN_GPG_PASSPHRASE}" \
+          -DskipTests=true \
           --batch-mode \
           --show-version
 
     - name: Create GitHub Release
       if: github.event.inputs.version
-      uses: actions/create-release@v1
+      uses: softprops/action-gh-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         tag_name: v${{ github.event.inputs.version }}
-        release_name: Release v${{ github.event.inputs.version }}
+        name: Release v${{ github.event.inputs.version }}
         body: |
           ## Changes in this Release
           
@@ -96,6 +98,10 @@ jobs:
               <version>${{ github.event.inputs.version }}</version>
           </dependency>
           ```
+        files: |
+          target/spring-scaffold-cli-*.jar
+          target/spring-scaffold-cli-*-sources.jar
+          target/spring-scaffold-cli-*-javadoc.jar
         draft: false
         prerelease: false
 

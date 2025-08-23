@@ -13,6 +13,9 @@ TEST_DIR="/tmp/spring-scaffold-test"
 PROJECT_NAME="test-project"
 PROJECT_PATH="$TEST_DIR/$PROJECT_NAME"
 
+# Get absolute path to script directory BEFORE changing directories
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+
 # Clean up any previous test
 if [ -d "$TEST_DIR" ]; then
     echo "🧹 Cleaning up previous test..."
@@ -28,7 +31,7 @@ echo ""
 
 # Build the CLI first
 echo "🔨 Building Spring Scaffold CLI..."
-cd /home/guilherme/IdeaProjects/spring-scaffold
+cd "$SCRIPT_DIR"
 mvn clean package -q
 if [ $? -ne 0 ]; then
     echo "❌ Failed to build Spring Scaffold CLI"
@@ -37,12 +40,15 @@ fi
 echo "✅ CLI built successfully"
 echo ""
 
+# Store the absolute path to the JAR
+JAR_PATH="$SCRIPT_DIR/target/spring-scaffold.jar"
+
 # Go back to test directory
 cd "$TEST_DIR"
 
 # Test 1: Generate a complete Spring Boot project
 echo "🏗️  Test 1: Generating Spring Boot project..."
-java -jar /home/guilherme/IdeaProjects/spring-scaffold/target/spring-scaffold.jar project \
+java -jar "$JAR_PATH" project \
     "$PROJECT_NAME" \
     --package "com.test.scaffold" \
     --database H2 \
@@ -59,7 +65,7 @@ cd "$PROJECT_PATH"
 
 # Test 2: Generate model (using relative package)
 echo "🏗️  Test 2: Generating model..."
-java -jar /home/guilherme/IdeaProjects/spring-scaffold/target/spring-scaffold.jar model \
+java -jar "$JAR_PATH" model \
     "User" \
     "name:String" "email:String" "age:Integer" \
     --package "model" \
@@ -74,7 +80,7 @@ echo "✅ Model generated successfully"
 
 # Test 3: Generate repository (using relative package)
 echo "🏗️  Test 3: Generating repository..."
-java -jar /home/guilherme/IdeaProjects/spring-scaffold/target/spring-scaffold.jar repository \
+java -jar "$JAR_PATH" repository \
     "UserRepository" \
     --model "User" \
     --type JPA \
@@ -88,7 +94,7 @@ echo "✅ Repository generated successfully"
 
 # Test 4: Generate service (using relative package)
 echo "🏗️  Test 4: Generating service..."
-java -jar /home/guilherme/IdeaProjects/spring-scaffold/target/spring-scaffold.jar service \
+java -jar "$JAR_PATH" service \
     "UserService" \
     --model "User" \
     --package "service" \
@@ -103,7 +109,7 @@ echo "✅ Service generated successfully"
 
 # Test 5: Generate controller (using relative package)
 echo "🏗️  Test 5: Generating controller..."
-java -jar /home/guilherme/IdeaProjects/spring-scaffold/target/spring-scaffold.jar controller \
+java -jar "$JAR_PATH" controller \
     "UserController" \
     --model "User" \
     --package "controller" \
@@ -173,14 +179,14 @@ echo "🔐 Test 10: Testing Spring Security JWT configuration..."
 
 # Generate User model and repository first (overwrite existing User model)
 rm -f src/main/java/com/test/scaffold/model/User.java
-java -jar /home/guilherme/IdeaProjects/spring-scaffold/target/spring-scaffold.jar model User username:String email:String password:String --valid > /dev/null 2>&1
+java -jar "$JAR_PATH" model User username:String email:String password:String --valid > /dev/null 2>&1
 if [ $? -ne 0 ]; then
     echo "❌ Failed to generate User model"
     exit 1
 fi
 
 rm -f src/main/java/com/test/scaffold/repository/UserRepository.java
-java -jar /home/guilherme/IdeaProjects/spring-scaffold/target/spring-scaffold.jar repository UserRepository --model User > /dev/null 2>&1
+java -jar "$JAR_PATH" repository UserRepository --model User > /dev/null 2>&1
 if [ $? -ne 0 ]; then
     echo "❌ Failed to generate User repository"
     exit 1
@@ -198,7 +204,7 @@ if grep -q "findByUsername" src/main/java/com/test/scaffold/repository/UserRepos
 fi
 
 # Generate Spring Security JWT configuration
-java -jar /home/guilherme/IdeaProjects/spring-scaffold/target/spring-scaffold.jar security \
+java -jar "$JAR_PATH" security \
     --jwt-secret "testSecretKey123456" \
     --jwt-expiration 86400000 \
     --user-entity User
@@ -313,7 +319,7 @@ cd "$AUTO_PACKAGE_DIR"
 echo "📦 Testing automatic package detection with e-commerce project..."
 
 # Generate e-commerce project
-java -jar /home/guilherme/IdeaProjects/spring-scaffold/target/spring-scaffold.jar project \
+java -jar "$JAR_PATH" project \
     "$ECOMMERCE_PROJECT" \
     --package "com.loja.ecommerce" \
     --database H2 \
@@ -328,7 +334,7 @@ cd "$ECOMMERCE_PATH"
 
 # Test with relative package names (demonstrating automatic detection)
 echo "   🏷️  Generating Product model with relative package..."
-java -jar /home/guilherme/IdeaProjects/spring-scaffold/target/spring-scaffold.jar model \
+java -jar "$JAR_PATH" model \
     "Product" \
     "name:String" "price:BigDecimal" "description:String" "category:String" \
     --package "model" \
@@ -341,7 +347,7 @@ if [ ! -f "src/main/java/com/loja/ecommerce/model/Product.java" ]; then
 fi
 
 echo "   💾 Generating ProductRepository with relative package..."
-java -jar /home/guilherme/IdeaProjects/spring-scaffold/target/spring-scaffold.jar repository \
+java -jar "$JAR_PATH" repository \
     "ProductRepository" \
     --model "Product" \
     --type JPA \
@@ -353,7 +359,7 @@ if [ ! -f "src/main/java/com/loja/ecommerce/repository/ProductRepository.java" ]
 fi
 
 echo "   ⚙️  Generating ProductService with default package (no --package)..."
-java -jar /home/guilherme/IdeaProjects/spring-scaffold/target/spring-scaffold.jar service \
+java -jar "$JAR_PATH" service \
     "ProductService" \
     --model "Product" \
     --crud \
@@ -365,7 +371,7 @@ if [ ! -f "src/main/java/com/loja/ecommerce/service/ProductService.java" ]; then
 fi
 
 echo "   🌐 Generating ProductController with default package (no --package)..."
-java -jar /home/guilherme/IdeaProjects/spring-scaffold/target/spring-scaffold.jar controller \
+java -jar "$JAR_PATH" controller \
     "ProductController" \
     --model "Product" \
     --crud \

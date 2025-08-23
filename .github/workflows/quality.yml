@@ -8,6 +8,11 @@ on:
   schedule:
     - cron: '0 2 * * 1' # Weekly on Monday at 2 AM
 
+permissions:
+  contents: read
+  security-events: write
+  actions: read
+
 jobs:
   sonarqube:
     name: SonarQube Analysis
@@ -88,7 +93,7 @@ jobs:
     - name: Run OWASP Dependency Check
       run: |
         mvn clean compile
-        mvn org.owasp:dependency-check-maven:check
+        mvn dependency-check:check -DfailBuildOnCVSS=7
 
     - name: Upload OWASP Dependency Check results
       uses: actions/upload-artifact@v4
@@ -120,5 +125,5 @@ jobs:
 
     - name: Check licenses
       run: |
-        mvn license:check
+        mvn license:check-file-header
         mvn license:aggregate-third-party-report
