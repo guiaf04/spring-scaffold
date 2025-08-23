@@ -1,6 +1,37 @@
 # Spring Scaffold CLI
 
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.guiaf04/spring-scaffold-cli.svg?label=Maven%20Central)](https://central.sonatype.com/artifact/io.github.guiaf04/spring-scaffold-cli)
+[![CI](https://github.com/guiaf04/spring-scaffold/actions/workflows/ci.yml/badge.svg)](https://github.com/guiaf04/spring-scaffold/actions/workflows/ci.yml)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=guiaf04_spring-scaffold&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=guiaf04_spring-scaffold)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 🚀 **Version 2.1.0** - Command-line application to assist in building Java and Spring Boot applications, offering automatic and **functional** scaffold generation for models, controllers, services, repositories, and complete projects.
+
+## 📦 Installation
+
+### Maven Central
+
+Add to your `pom.xml`:
+
+```xml
+<dependency>
+    <groupId>io.github.guiaf04</groupId>
+    <artifactId>spring-scaffold-cli</artifactId>
+    <version>2.1.0</version>
+</dependency>
+```
+
+### From Source
+
+```bash
+git clone https://github.com/guiaf04/spring-scaffold.git
+cd spring-scaffold
+mvn clean package -DskipTests
+```
+
+### Pre-built JAR
+
+Download from [GitHub Releases](https://github.com/guiaf04/spring-scaffold/releases)
 
 ## ✨ What's New in v2.1.0
 
@@ -30,13 +61,6 @@
 ### Prerequisites
 - Java 17+
 - Maven 3.8+
-
-### Installation
-```bash
-git clone https://github.com/guiaf04/spring-scaffold.git
-cd spring-scaffold
-mvn clean package -DskipTests
-```
 
 ### Basic Usage
 

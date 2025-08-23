@@ -56,3 +56,19 @@ dependency-reduced-pom.xml
 
 # Temporary directories
 /tmp/
+
+# Release and signing
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+pom.xml.tag
+release.properties
+.gnupg/
+*.asc
+
+# Security scanning reports
+trivy-results.sarif
+dependency-check-report.html
+
+# Maven settings (local development)
+.mvn/settings-local.xml
