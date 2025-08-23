@@ -263,10 +263,13 @@
                 <version>8.4.0</version>
                 <configuration>
                     <failBuildOnCVSS>7</failBuildOnCVSS>
-                    <!-- Desabilitar updates automáticos para evitar problemas de conectividade -->
-                    <autoUpdate>false</autoUpdate>
-                    <!-- Usar dados locais existentes -->
-                    <cveValidForHours>0</cveValidForHours>
+                    <!-- Permitir download inicial da base de dados -->
+                    <autoUpdate>true</autoUpdate>
+                    <!-- Usar dados por até 24 horas para evitar updates frequentes -->
+                    <cveValidForHours>24</cveValidForHours>
+                    <!-- Configurar timeout para evitar problemas de conectividade -->
+                    <connectionTimeout>30000</connectionTimeout>
+                    <readTimeout>60000</readTimeout>
                     <suppressionFiles>
                         <suppressionFile>owasp-suppressions.xml</suppressionFile>
                     </suppressionFiles>
