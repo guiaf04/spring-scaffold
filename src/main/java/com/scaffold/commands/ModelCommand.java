@@ -2,6 +2,7 @@ package com.scaffold.commands;
 
 import com.scaffold.generators.ModelGenerator;
 import com.scaffold.models.FieldInfo;
+import com.scaffold.utils.ProjectUtils;
 import lombok.extern.slf4j.Slf4j;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -41,8 +42,7 @@ public class ModelCommand implements Callable<Integer> {
 
     @Option(
         names = {"-p", "--package", "--pkg"},
-        description = "Class package (default: ${DEFAULT-VALUE})",
-        defaultValue = "com.example.model"
+        description = "Class package (relative or absolute). Use 'model' for automatic package detection or full package like 'com.example.model'"
     )
     private String packageName;
 
@@ -98,11 +98,16 @@ public class ModelCommand implements Callable<Integer> {
                 System.err.println("❌ Class name is required");
                 return 1;
             }
+
+            // Resolve package name using auto-detection
+            String resolvedPackage = resolvePackageName(packageName, "model");
+            log.info("Using package: {}", resolvedPackage);
+
             List<FieldInfo> fieldInfoList = parseFields();
             ModelGenerator generator = new ModelGenerator();
             boolean success = generator.generate(
                 className,
-                packageName,
+                resolvedPackage,
                 fieldInfoList,
                 tableName,
                 includeJpa,
@@ -114,7 +119,7 @@ public class ModelCommand implements Callable<Integer> {
             if (success) {
                 System.out.println("✅ Model " + className + " generated successfully!");
                 System.out.println("📁 Location: " + outputDirectory + "/" + 
-                    packageName.replace(".", "/") + "/" + className + ".java");
+                    resolvedPackage.replace(".", "/") + "/" + className + ".java");
                 return 0;
             } else {
                 System.err.println("❌ Failed to generate model");
@@ -126,6 +131,32 @@ public class ModelCommand implements Callable<Integer> {
             System.err.println("❌ Unexpected error: " + e.getMessage());
             return 1;
         }
+    }
+
+    /**
+     * Resolves the package name using auto-detection logic.
+     * 
+     * @param userPackage The package specified by the user (can be null, relative, or absolute)
+     * @param defaultSubPackage The default sub-package to use (e.g., "model", "controller")
+     * @return The resolved full package name
+     */
+    private String resolvePackageName(String userPackage, String defaultSubPackage) {
+        String basePackage = ProjectUtils.detectBasePackage();
+        
+        if (userPackage == null || userPackage.trim().isEmpty()) {
+            // No package specified, use default: basePackage.subPackage
+            return basePackage + "." + defaultSubPackage;
+        }
+        
+        userPackage = userPackage.trim();
+        
+        // If it contains dots, it's likely a full package name
+        if (userPackage.contains(".")) {
+            return userPackage;
+        }
+        
+        // Otherwise, treat it as a relative package and append to base
+        return basePackage + "." + userPackage;
     }
 
     private List<FieldInfo> parseFields() {

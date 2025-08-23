@@ -32,8 +32,7 @@ public class ControllerCommand implements Callable<Integer> {
 
     @Option(
         names = {"-p", "--package", "--pkg"},
-        description = "Controller package (default: ${DEFAULT-VALUE})",
-        defaultValue = "com.example.controller"
+        description = "Controller package (relative or absolute). Use 'controller' for automatic package detection"
     )
     private String packageName;
 
@@ -45,15 +44,13 @@ public class ControllerCommand implements Callable<Integer> {
 
     @Option(
         names = {"--model-package", "--model-pkg"},
-        description = "Model class package (default: ${DEFAULT-VALUE})",
-        defaultValue = "com.example.model"
+        description = "Model class package (relative or absolute). Leave empty for auto-detection"
     )
     private String modelPackage;
 
     @Option(
         names = {"--service-package", "--service-pkg"},
-        description = "Service class package (default: ${DEFAULT-VALUE})",
-        defaultValue = "com.example.service"
+        description = "Service class package (relative or absolute). Leave empty for auto-detection"
     )
     private String servicePackage;
 
@@ -97,36 +94,27 @@ public class ControllerCommand implements Callable<Integer> {
                 return 1;
             }
             
-            // Auto-detect base package if using defaults
-            String detectedBasePackage = ProjectUtils.detectBasePackage();
+            // Resolve package names using auto-detection
+            String resolvedControllerPackage = resolvePackageName(packageName, "controller");
+            String resolvedModelPackage = resolvePackageName(modelPackage, "model");
+            String resolvedServicePackage = resolvePackageName(servicePackage, "service");
             
-            // Use detected packages if still using defaults
-            if ("com.example.controller".equals(packageName)) {
-                packageName = ProjectUtils.getControllerPackage(detectedBasePackage);
-                log.debug("Auto-detected controller package: {}", packageName);
-            }
-            
-            if ("com.example.model".equals(modelPackage)) {
-                modelPackage = ProjectUtils.getModelPackage(detectedBasePackage);
-                log.debug("Auto-detected model package: {}", modelPackage);
-            }
-            
-            if ("com.example.service".equals(servicePackage)) {
-                servicePackage = ProjectUtils.getServicePackage(detectedBasePackage);
-                log.debug("Auto-detected service package: {}", servicePackage);
-            }
+            log.info("Using controller package: {}", resolvedControllerPackage);
+            log.info("Using model package: {}", resolvedModelPackage);
+            log.info("Using service package: {}", resolvedServicePackage);
             
             if (modelName == null || modelName.trim().isEmpty()) {
                 modelName = inferModelName(controllerName);
                 log.info("Inferred model: {}", modelName);
             }
+            
             ControllerGenerator generator = new ControllerGenerator();
             boolean success = generator.generate(
                 controllerName,
-                packageName,
+                resolvedControllerPackage,
                 modelName,
-                modelPackage,
-                servicePackage,
+                resolvedModelPackage,
+                resolvedServicePackage,
                 basePath,
                 includeCrud,
                 includeSwagger,
@@ -137,7 +125,7 @@ public class ControllerCommand implements Callable<Integer> {
             if (success) {
                 System.out.println("✅ Controller " + controllerName + " generated successfully!");
                 System.out.println("📁 Location: " + outputDirectory + "/" + 
-                    packageName.replace(".", "/") + "/" + controllerName + ".java");
+                    resolvedControllerPackage.replace(".", "/") + "/" + controllerName + ".java");
                 
                 if (modelName != null) {
                     System.out.println("🔗 Associated model: " + modelName);
@@ -156,6 +144,32 @@ public class ControllerCommand implements Callable<Integer> {
             System.err.println("❌ Unexpected error: " + e.getMessage());
             return 1;
         }
+    }
+
+    /**
+     * Resolves the package name using auto-detection logic.
+     * 
+     * @param userPackage The package specified by the user (can be null, relative, or absolute)
+     * @param defaultSubPackage The default sub-package to use (e.g., "model", "controller")
+     * @return The resolved full package name
+     */
+    private String resolvePackageName(String userPackage, String defaultSubPackage) {
+        String basePackage = ProjectUtils.detectBasePackage();
+        
+        if (userPackage == null || userPackage.trim().isEmpty()) {
+            // No package specified, use default: basePackage.subPackage
+            return basePackage + "." + defaultSubPackage;
+        }
+        
+        userPackage = userPackage.trim();
+        
+        // If it contains dots, it's likely a full package name
+        if (userPackage.contains(".")) {
+            return userPackage;
+        }
+        
+        // Otherwise, treat it as a relative package and append to base
+        return basePackage + "." + userPackage;
     }
 
     private String inferModelName(String controllerName) {

@@ -32,8 +32,7 @@ public class RepositoryCommand implements Callable<Integer> {
 
     @Option(
         names = {"-p", "--package", "--pkg"},
-        description = "Repository package (default: ${DEFAULT-VALUE})",
-        defaultValue = "com.example.repository"
+        description = "Repository package (relative or absolute). Use 'repository' for automatic package detection"
     )
     private String packageName;
 
@@ -45,8 +44,7 @@ public class RepositoryCommand implements Callable<Integer> {
 
     @Option(
         names = {"--model-package", "--model-pkg"},
-        description = "Model class package (default: ${DEFAULT-VALUE})",
-        defaultValue = "com.example.model"
+        description = "Model class package (relative or absolute). Leave empty for auto-detection"
     )
     private String modelPackage;
 
@@ -97,30 +95,24 @@ public class RepositoryCommand implements Callable<Integer> {
                 return 1;
             }
             
-            // Auto-detect base package if using defaults
-            String detectedBasePackage = ProjectUtils.detectBasePackage();
+            // Resolve package names using auto-detection
+            String resolvedRepositoryPackage = resolvePackageName(packageName, "repository");
+            String resolvedModelPackage = resolvePackageName(modelPackage, "model");
             
-            // Use detected packages if still using defaults
-            if ("com.example.repository".equals(packageName)) {
-                packageName = ProjectUtils.getRepositoryPackage(detectedBasePackage);
-                log.debug("Auto-detected repository package: {}", packageName);
-            }
-            
-            if ("com.example.model".equals(modelPackage)) {
-                modelPackage = ProjectUtils.getModelPackage(detectedBasePackage);
-                log.debug("Auto-detected model package: {}", modelPackage);
-            }
+            log.info("Using repository package: {}", resolvedRepositoryPackage);
+            log.info("Using model package: {}", resolvedModelPackage);
             
             if (modelName == null || modelName.trim().isEmpty()) {
                 modelName = inferModelName(repositoryName);
                 log.info("Inferred model: {}", modelName);
             }
+            
             RepositoryGenerator generator = new RepositoryGenerator();
             boolean success = generator.generate(
                 repositoryName,
-                packageName,
+                resolvedRepositoryPackage,
                 modelName,
-                modelPackage,
+                resolvedModelPackage,
                 repositoryType,
                 idType,
                 includeCustomQueries,
@@ -131,7 +123,7 @@ public class RepositoryCommand implements Callable<Integer> {
             if (success) {
                 System.out.println("✅ Repository " + repositoryName + " generated successfully!");
                 System.out.println("📁 Location: " + outputDirectory + "/" + 
-                    packageName.replace(".", "/") + "/" + repositoryName + ".java");
+                    resolvedRepositoryPackage.replace(".", "/") + "/" + repositoryName + ".java");
                 System.out.println("🔧 Type: " + repositoryType);
                 
                 if (modelName != null) {
@@ -157,5 +149,31 @@ public class RepositoryCommand implements Callable<Integer> {
             return repositoryName.substring(0, repositoryName.length() - 10);
         }
         return repositoryName + "Model";
+    }
+
+    /**
+     * Resolves the package name using auto-detection logic.
+     * 
+     * @param userPackage The package specified by the user (can be null, relative, or absolute)
+     * @param defaultSubPackage The default sub-package to use (e.g., "model", "controller")
+     * @return The resolved full package name
+     */
+    private String resolvePackageName(String userPackage, String defaultSubPackage) {
+        String basePackage = ProjectUtils.detectBasePackage();
+        
+        if (userPackage == null || userPackage.trim().isEmpty()) {
+            // No package specified, use default: basePackage.subPackage
+            return basePackage + "." + defaultSubPackage;
+        }
+        
+        userPackage = userPackage.trim();
+        
+        // If it contains dots, it's likely a full package name
+        if (userPackage.contains(".")) {
+            return userPackage;
+        }
+        
+        // Otherwise, treat it as a relative package and append to base
+        return basePackage + "." + userPackage;
     }
 }

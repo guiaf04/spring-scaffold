@@ -32,8 +32,7 @@ public class ServiceCommand implements Callable<Integer> {
 
     @Option(
         names = {"-p", "--package", "--pkg"},
-        description = "Service package (default: ${DEFAULT-VALUE})",
-        defaultValue = "com.example.service"
+        description = "Service package (relative or absolute). Use 'service' for automatic package detection"
     )
     private String packageName;
 
@@ -45,15 +44,13 @@ public class ServiceCommand implements Callable<Integer> {
 
     @Option(
         names = {"--model-package", "--model-pkg"},
-        description = "Model class package (default: ${DEFAULT-VALUE})",
-        defaultValue = "com.example.model"
+        description = "Model class package (relative or absolute). Leave empty for auto-detection"
     )
     private String modelPackage;
 
     @Option(
         names = {"--repository-package", "--repo-pkg"},
-        description = "Repository class package (default: ${DEFAULT-VALUE})",
-        defaultValue = "com.example.repository"
+        description = "Repository class package (relative or absolute). Leave empty for auto-detection"
     )
     private String repositoryPackage;
 
@@ -96,36 +93,27 @@ public class ServiceCommand implements Callable<Integer> {
                 return 1;
             }
             
-            // Auto-detect base package if using defaults
-            String detectedBasePackage = ProjectUtils.detectBasePackage();
+            // Resolve package names using auto-detection
+            String resolvedServicePackage = resolvePackageName(packageName, "service");
+            String resolvedModelPackage = resolvePackageName(modelPackage, "model");
+            String resolvedRepositoryPackage = resolvePackageName(repositoryPackage, "repository");
             
-            // Use detected packages if still using defaults
-            if ("com.example.service".equals(packageName)) {
-                packageName = ProjectUtils.getServicePackage(detectedBasePackage);
-                log.debug("Auto-detected service package: {}", packageName);
-            }
-            
-            if ("com.example.model".equals(modelPackage)) {
-                modelPackage = ProjectUtils.getModelPackage(detectedBasePackage);
-                log.debug("Auto-detected model package: {}", modelPackage);
-            }
-            
-            if ("com.example.repository".equals(repositoryPackage)) {
-                repositoryPackage = ProjectUtils.getRepositoryPackage(detectedBasePackage);
-                log.debug("Auto-detected repository package: {}", repositoryPackage);
-            }
+            log.info("Using service package: {}", resolvedServicePackage);
+            log.info("Using model package: {}", resolvedModelPackage);
+            log.info("Using repository package: {}", resolvedRepositoryPackage);
             
             if (modelName == null || modelName.trim().isEmpty()) {
                 modelName = inferModelName(serviceName);
                 log.info("Inferred model: {}", modelName);
             }
+            
             ServiceGenerator generator = new ServiceGenerator();
             boolean success = generator.generate(
                 serviceName,
-                packageName,
+                resolvedServicePackage,
                 modelName,
-                modelPackage,
-                repositoryPackage,
+                resolvedModelPackage,
+                resolvedRepositoryPackage,
                 generateInterface,
                 includeCrud,
                 includeTransactional,
@@ -136,11 +124,11 @@ public class ServiceCommand implements Callable<Integer> {
             if (success) {
                 System.out.println("✅ Service " + serviceName + " generated successfully!");
                 System.out.println("📁 Location: " + outputDirectory + "/" + 
-                    packageName.replace(".", "/") + "/" + serviceName + ".java");
+                    resolvedServicePackage.replace(".", "/") + "/" + serviceName + ".java");
                 
                 if (generateInterface) {
                     System.out.println("📁 Interface: " + outputDirectory + "/" + 
-                        packageName.replace(".", "/") + "/" + serviceName.replace("Impl", "") + ".java");
+                        resolvedServicePackage.replace(".", "/") + "/" + serviceName.replace("Impl", "") + ".java");
                 }
                 
                 if (modelName != null) {
@@ -158,6 +146,32 @@ public class ServiceCommand implements Callable<Integer> {
             System.err.println("❌ Unexpected error: " + e.getMessage());
             return 1;
         }
+    }
+
+    /**
+     * Resolves the package name using auto-detection logic.
+     * 
+     * @param userPackage The package specified by the user (can be null, relative, or absolute)
+     * @param defaultSubPackage The default sub-package to use (e.g., "model", "controller")
+     * @return The resolved full package name
+     */
+    private String resolvePackageName(String userPackage, String defaultSubPackage) {
+        String basePackage = ProjectUtils.detectBasePackage();
+        
+        if (userPackage == null || userPackage.trim().isEmpty()) {
+            // No package specified, use default: basePackage.subPackage
+            return basePackage + "." + defaultSubPackage;
+        }
+        
+        userPackage = userPackage.trim();
+        
+        // If it contains dots, it's likely a full package name
+        if (userPackage.contains(".")) {
+            return userPackage;
+        }
+        
+        // Otherwise, treat it as a relative package and append to base
+        return basePackage + "." + userPackage;
     }
 
     private String inferModelName(String serviceName) {
