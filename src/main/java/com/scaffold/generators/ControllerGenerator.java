@@ -52,7 +52,7 @@ public class ControllerGenerator {
             context.put("modelInstanceName", modelInstanceName);
             context.put("resourcePath", resourcePath);
             
-            log.info("Configurações:");
+            log.info("Configuration:");
             log.info("- Controller: {}", controllerName);
             log.info("- Package: {}", packageName);
             log.info("- Model: {}", modelName);

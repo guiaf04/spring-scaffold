@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -42,8 +43,24 @@ public class ProjectGenerator {
             context.put("springBootVersion", springBootVersion);
             context.put("javaVersion", javaVersion);
             context.put("dependencies", Arrays.asList(dependencies));
+            
+            // Process dependencies to create boolean flags for templates
+            List<String> depsList = Arrays.asList(dependencies);
+            context.put("web", depsList.contains("web"));
+            context.put("jpa", depsList.contains("jpa"));
+            context.put("security", depsList.contains("security"));
+            context.put("validation", depsList.contains("validation"));
+            context.put("actuator", depsList.contains("actuator"));
+            context.put("test", depsList.contains("test"));
+            context.put("devtools", depsList.contains("devtools"));
+            context.put("lombok", depsList.contains("lombok"));
+            context.put("h2", depsList.contains("h2"));
+            context.put("mysql", depsList.contains("mysql"));
+            context.put("postgresql", depsList.contains("postgresql"));
+            context.put("mongodb", depsList.contains("mongodb"));
+            context.put("swagger", depsList.contains("swagger"));
             context.put("database", database.name());
-            context.put("packaging", packaging.name());
+            context.put("packaging", packaging.name().toLowerCase());
             context.put("includeDocker", includeDocker);
             context.put("includeGitignore", includeGitignore);
             context.put("includeReadme", includeReadme);
@@ -55,10 +72,10 @@ public class ProjectGenerator {
             Map<String, Object> dbConfig = getDatabaseConfig(database);
             context.putAll(dbConfig);
             
-            log.info("Configurações:");
-            log.info("- Projeto: {}", projectName);
+            log.info("Configuration:");
+            log.info("- Project: {}", projectName);
             log.info("- Artifact ID: {}", artifactId);
-            log.info("- Classe Principal: {}", mainClassName);
+            log.info("- Main Class: {}", mainClassName);
             log.info("- Database: {}", database);
             
             String projectPath = outputDirectory + "/" + artifactId;

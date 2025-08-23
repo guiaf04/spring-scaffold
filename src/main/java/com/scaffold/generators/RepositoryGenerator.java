@@ -60,7 +60,7 @@ public class RepositoryGenerator {
             }
             context.put("baseType", baseType);
             
-            log.info("Configurações:");
+            log.info("Configuration:");
             log.info("- Repository: {}", repositoryName);
             log.info("- Package: {}", packageName);
             log.info("- Model: {}", modelName);

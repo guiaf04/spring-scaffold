@@ -22,18 +22,18 @@ public interface {{repositoryName}} extends {{baseType}}<{{modelName}}, {{idType
     @Query("SELECT m FROM {{modelName}} m WHERE LOWER(m.name) LIKE LOWER(CONCAT('%', :name, '%'))")
     List<{{modelName}}> findByNameContainingIgnoreCase(@Param("name") String name);
 
-    @Query("SELECT m FROM {{modelName}} m WHERE m.active = true")
-    List<{{modelName}}> findActiveItems();
+    @Query("SELECT m FROM {{modelName}} m ORDER BY m.id DESC")
+    List<{{modelName}}> findAllOrderByIdDesc();
 
-    @Query("SELECT COUNT(m) FROM {{modelName}} m WHERE m.active = true")
-    Long countActiveItems();
+    @Query("SELECT COUNT(m) FROM {{modelName}} m")
+    Long countAll();
 
     {{#includePagination}}
     @Query("SELECT m FROM {{modelName}} m WHERE LOWER(m.name) LIKE LOWER(CONCAT('%', :name, '%'))")
     Page<{{modelName}}> findByNameContainingIgnoreCase(@Param("name") String name, Pageable pageable);
 
-    @Query("SELECT m FROM {{modelName}} m WHERE m.active = true")
-    Page<{{modelName}}> findActiveItems(Pageable pageable);
+    @Query("SELECT m FROM {{modelName}} m ORDER BY m.id DESC")
+    Page<{{modelName}}> findAllOrderByIdDesc(Pageable pageable);
     {{/includePagination}}
 {{/includeCustomQueries}}
 }

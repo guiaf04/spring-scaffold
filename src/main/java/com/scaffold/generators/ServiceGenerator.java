@@ -58,7 +58,7 @@ public class ServiceGenerator {
             context.put("interfaceName", interfaceName);
             context.put("implementationName", implementationName);
             
-            log.info("Configurações:");
+            log.info("Configuration:");
             log.info("- Service: {}", serviceName);
             log.info("- Package: {}", packageName);
             log.info("- Model: {}", modelName);

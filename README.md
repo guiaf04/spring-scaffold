@@ -347,6 +347,22 @@ spring-scaffold-cli/
 mvn test
 ```
 
+### Template Testing
+**⚠️ Important**: Always run the template test script instead of testing multiple commands manually:
+
+```bash
+./test-templates.sh
+```
+
+This script performs comprehensive testing of all templates:
+- ✅ Generates complete Spring Boot project
+- ✅ Tests all component generation (model, service, repository, controller)
+- ✅ Validates Maven compilation and tests
+- ✅ Verifies code quality and internationalization
+- ✅ Ensures all templates work correctly together
+
+The script automatically cleans up test artifacts and provides detailed feedback on each test phase.
+
 ### Build
 ```bash
 mvn clean package

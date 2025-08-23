@@ -62,14 +62,6 @@
         {{/database}}
         
         <!-- Additional Dependencies -->
-        {{#dependencies}}
-        {{#.}}
-        {{#web}}
-        <!-- Web yet included -->
-        {{/web}}
-        {{#jpa}}
-        <!-- JPA yet included -->
-        {{/jpa}}
         {{#validation}}
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -83,14 +75,26 @@
             <version>2.1.0</version>
         </dependency>
         {{/swagger}}
+        {{#security}}
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+        {{/security}}
         {{#actuator}}
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
         {{/actuator}}
-        {{/.}}
-        {{/dependencies}}
+        {{#devtools}}
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <scope>runtime</scope>
+            <optional>true</optional>
+        </dependency>
+        {{/devtools}}
         
         <!-- Lombok -->
         <dependency>
@@ -103,6 +107,11 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

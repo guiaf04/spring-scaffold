@@ -1,6 +1,7 @@
 package com.scaffold.commands;
 
 import com.scaffold.generators.ControllerGenerator;
+import com.scaffold.utils.ProjectUtils;
 import lombok.extern.slf4j.Slf4j;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -65,24 +66,21 @@ public class ControllerCommand implements Callable<Integer> {
 
     @Option(
         names = {"--crud"},
-        description = "Include complete CRUD operations (default: ${DEFAULT-VALUE})",
-        defaultValue = "true"
+        description = "Include complete CRUD operations"
     )
-    private boolean includeCrud;
+    private boolean includeCrud = false;
 
     @Option(
         names = {"--swagger"},
-        description = "Include Swagger/OpenAPI annotations (default: ${DEFAULT-VALUE})",
-        defaultValue = "true"
+        description = "Include Swagger/OpenAPI annotations"
     )
-    private boolean includeSwagger;
+    private boolean includeSwagger = false;
 
     @Option(
         names = {"--validation"},
-        description = "Include request validations (default: ${DEFAULT-VALUE})",
-        defaultValue = "true"
+        description = "Include request validations (default: true)"
     )
-    private boolean includeValidation;
+    private boolean includeValidation = true;
 
     @Option(
         names = {"-o", "--output"},
@@ -98,6 +96,26 @@ public class ControllerCommand implements Callable<Integer> {
                 System.err.println("❌ Controller name is required");
                 return 1;
             }
+            
+            // Auto-detect base package if using defaults
+            String detectedBasePackage = ProjectUtils.detectBasePackage();
+            
+            // Use detected packages if still using defaults
+            if ("com.example.controller".equals(packageName)) {
+                packageName = ProjectUtils.getControllerPackage(detectedBasePackage);
+                log.debug("Auto-detected controller package: {}", packageName);
+            }
+            
+            if ("com.example.model".equals(modelPackage)) {
+                modelPackage = ProjectUtils.getModelPackage(detectedBasePackage);
+                log.debug("Auto-detected model package: {}", modelPackage);
+            }
+            
+            if ("com.example.service".equals(servicePackage)) {
+                servicePackage = ProjectUtils.getServicePackage(detectedBasePackage);
+                log.debug("Auto-detected service package: {}", servicePackage);
+            }
+            
             if (modelName == null || modelName.trim().isEmpty()) {
                 modelName = inferModelName(controllerName);
                 log.info("Inferred model: {}", modelName);

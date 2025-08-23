@@ -35,7 +35,7 @@ public class ModelGenerator {
                 tableName = inferTableName(className);
             }
             
-            log.info("Configurações:");
+            log.info("Configuration:");
             log.info("- Classe: {}", className);
             log.info("- Package: {}", packageName);
             log.info("- Tabela: {}", tableName);

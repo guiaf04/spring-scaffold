@@ -1,6 +1,7 @@
 package com.scaffold.commands;
 
 import com.scaffold.generators.RepositoryGenerator;
+import com.scaffold.utils.ProjectUtils;
 import lombok.extern.slf4j.Slf4j;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -95,6 +96,21 @@ public class RepositoryCommand implements Callable<Integer> {
                 System.err.println("❌ Repository name is required");
                 return 1;
             }
+            
+            // Auto-detect base package if using defaults
+            String detectedBasePackage = ProjectUtils.detectBasePackage();
+            
+            // Use detected packages if still using defaults
+            if ("com.example.repository".equals(packageName)) {
+                packageName = ProjectUtils.getRepositoryPackage(detectedBasePackage);
+                log.debug("Auto-detected repository package: {}", packageName);
+            }
+            
+            if ("com.example.model".equals(modelPackage)) {
+                modelPackage = ProjectUtils.getModelPackage(detectedBasePackage);
+                log.debug("Auto-detected model package: {}", modelPackage);
+            }
+            
             if (modelName == null || modelName.trim().isEmpty()) {
                 modelName = inferModelName(repositoryName);
                 log.info("Inferred model: {}", modelName);

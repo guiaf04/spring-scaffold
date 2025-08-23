@@ -1,6 +1,7 @@
 package com.scaffold.commands;
 
 import com.scaffold.generators.ServiceGenerator;
+import com.scaffold.utils.ProjectUtils;
 import lombok.extern.slf4j.Slf4j;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -58,31 +59,27 @@ public class ServiceCommand implements Callable<Integer> {
 
     @Option(
         names = {"--interface"},
-        description = "Generate service interface (default: ${DEFAULT-VALUE})",
-        defaultValue = "true"
+        description = "Generate service interface (default: ${DEFAULT-VALUE})"
     )
-    private boolean generateInterface;
+    private boolean generateInterface = true;
 
     @Option(
         names = {"--crud"},
-        description = "Include basic CRUD methods (default: ${DEFAULT-VALUE})",
-        defaultValue = "true"
+        description = "Include basic CRUD methods"
     )
-    private boolean includeCrud;
+    private boolean includeCrud = false;
 
     @Option(
         names = {"--transactional"},
-        description = "Include @Transactional annotations (default: ${DEFAULT-VALUE})",
-        defaultValue = "true"
+        description = "Include @Transactional annotations"
     )
-    private boolean includeTransactional;
+    private boolean includeTransactional = false;
 
     @Option(
         names = {"--validation"},
-        description = "Include business validations (default: ${DEFAULT-VALUE})",
-        defaultValue = "true"
+        description = "Include business validations"
     )
-    private boolean includeValidation;
+    private boolean includeValidation = false;
 
     @Option(
         names = {"-o", "--output"},
@@ -98,6 +95,26 @@ public class ServiceCommand implements Callable<Integer> {
                 System.err.println("❌ Service name is required");
                 return 1;
             }
+            
+            // Auto-detect base package if using defaults
+            String detectedBasePackage = ProjectUtils.detectBasePackage();
+            
+            // Use detected packages if still using defaults
+            if ("com.example.service".equals(packageName)) {
+                packageName = ProjectUtils.getServicePackage(detectedBasePackage);
+                log.debug("Auto-detected service package: {}", packageName);
+            }
+            
+            if ("com.example.model".equals(modelPackage)) {
+                modelPackage = ProjectUtils.getModelPackage(detectedBasePackage);
+                log.debug("Auto-detected model package: {}", modelPackage);
+            }
+            
+            if ("com.example.repository".equals(repositoryPackage)) {
+                repositoryPackage = ProjectUtils.getRepositoryPackage(detectedBasePackage);
+                log.debug("Auto-detected repository package: {}", repositoryPackage);
+            }
+            
             if (modelName == null || modelName.trim().isEmpty()) {
                 modelName = inferModelName(serviceName);
                 log.info("Inferred model: {}", modelName);
