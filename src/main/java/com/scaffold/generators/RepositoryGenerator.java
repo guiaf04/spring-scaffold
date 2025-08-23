@@ -41,8 +41,8 @@ public class RepositoryGenerator {
             context.put("includePagination", includePagination);
             
             // Check if this is a User repository for JWT authentication methods
-            boolean isUserRepository = modelName.equals("User") || repositoryName.contains("User");
-            context.put("isUserRepository", isUserRepository);
+            // Only include JWT methods when explicitly requested
+            context.put("isUserRepository", false);
             
             String modelInstanceName = Character.toLowerCase(modelName.charAt(0)) + modelName.substring(1);
             context.put("modelInstanceName", modelInstanceName);

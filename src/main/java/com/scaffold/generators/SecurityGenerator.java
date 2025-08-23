@@ -62,7 +62,118 @@ public class SecurityGenerator {
         generateJwtRequest(config, securityDir);
         generateJwtResponse(config, securityDir);
 
+        // Add Maven dependencies
+        addSecurityDependencies();
+
+        // Update User repository to include JWT methods
+        updateUserRepository(config);
+
         log.info("Spring Security configuration generated successfully");
+    }
+
+    private void addSecurityDependencies() throws IOException {
+        log.info("Adding Spring Security and JWT dependencies to pom.xml...");
+        
+        Path pomFile = Paths.get(outputDirectory, "pom.xml");
+        if (!Files.exists(pomFile)) {
+            log.warn("pom.xml not found at: {}", pomFile);
+            return;
+        }
+
+        String pomContent = Files.readString(pomFile);
+        
+        // Check if dependencies already exist
+        if (pomContent.contains("spring-boot-starter-security") && pomContent.contains("jjwt")) {
+            log.info("Security dependencies already exist in pom.xml");
+            return;
+        }
+
+        // Find the dependencies section
+        String dependenciesStart = "<dependencies>";
+        String dependenciesEnd = "</dependencies>";
+        
+        int startIndex = pomContent.indexOf(dependenciesStart);
+        int endIndex = pomContent.indexOf(dependenciesEnd);
+        
+        if (startIndex == -1 || endIndex == -1) {
+            log.warn("Could not find dependencies section in pom.xml");
+            return;
+        }
+
+        StringBuilder newPomContent = new StringBuilder();
+        newPomContent.append(pomContent.substring(0, endIndex));
+        
+        // Add Spring Security dependency if not present
+        if (!pomContent.contains("spring-boot-starter-security")) {
+            newPomContent.append("\n\t\t<!-- Spring Security -->\n");
+            newPomContent.append("\t\t<dependency>\n");
+            newPomContent.append("\t\t\t<groupId>org.springframework.boot</groupId>\n");
+            newPomContent.append("\t\t\t<artifactId>spring-boot-starter-security</artifactId>\n");
+            newPomContent.append("\t\t</dependency>\n");
+        }
+        
+        // Add JWT dependency if not present
+        if (!pomContent.contains("jjwt")) {
+            newPomContent.append("\n\t\t<!-- JWT -->\n");
+            newPomContent.append("\t\t<dependency>\n");
+            newPomContent.append("\t\t\t<groupId>io.jsonwebtoken</groupId>\n");
+            newPomContent.append("\t\t\t<artifactId>jjwt</artifactId>\n");
+            newPomContent.append("\t\t\t<version>0.9.1</version>\n");
+            newPomContent.append("\t\t</dependency>\n");
+        }
+        
+        newPomContent.append(pomContent.substring(endIndex));
+        
+        Files.writeString(pomFile, newPomContent.toString());
+        log.info("Security dependencies added to pom.xml");
+    }
+
+    private void updateUserRepository(SecurityConfig config) throws IOException {
+        log.info("Updating User repository with JWT authentication methods...");
+        
+        // Build repository path
+        String repositoryPath = userRepositoryPackage.replace(".", "/");
+        Path repositoryFile = Paths.get(outputDirectory, "src/main/java", repositoryPath, userEntity + "Repository.java");
+        
+        if (!Files.exists(repositoryFile)) {
+            log.warn("User repository not found at: {}", repositoryFile);
+            return;
+        }
+        
+        try {
+            String content = Files.readString(repositoryFile);
+            
+            // Check if JWT methods already exist
+            if (content.contains("findByUsername") && content.contains("existsByUsername")) {
+                log.info("JWT methods already exist in User repository");
+                return;
+            }
+            
+            // Add Optional import if not present
+            if (!content.contains("import java.util.Optional;")) {
+                String importLine = "import java.util.Optional;\n";
+                int packageIndex = content.indexOf("import ");
+                if (packageIndex > 0) {
+                    content = content.substring(0, packageIndex) + importLine + content.substring(packageIndex);
+                }
+            }
+            
+            // Add JWT methods before the closing brace
+            String jwtMethods = "\n    // JWT Authentication methods\n" +
+                              "    Optional<" + userEntity + "> findByUsername(String username);\n" +
+                              "    Boolean existsByUsername(String username);\n";
+            
+            // Find the last closing brace and add methods before it
+            int lastBrace = content.lastIndexOf("}");
+            if (lastBrace > 0) {
+                String updatedContent = content.substring(0, lastBrace) + jwtMethods + "}";
+                Files.writeString(repositoryFile, updatedContent);
+                log.info("Updated User repository with JWT methods");
+            }
+            
+        } catch (IOException e) {
+            log.error("Failed to update User repository: {}", e.getMessage());
+        }
     }
 
     private void generateSecurityConfig(SecurityConfig config, Path outputDir) throws IOException {

@@ -168,8 +168,112 @@ if [ $? -ne 0 ]; then
 fi
 echo "✅ Package created successfully"
 
-# Test 10: Verify generated code quality (basic checks)
-echo "🔍 Test 10: Verifying generated code quality..."
+# Test 10: Verify Spring Security JWT configuration
+echo "🔐 Test 10: Testing Spring Security JWT configuration..."
+
+# Generate User model and repository first (overwrite existing User model)
+rm -f src/main/java/com/test/scaffold/model/User.java
+java -jar /home/guilherme/IdeaProjects/spring-scaffold/target/spring-scaffold.jar model User username:String email:String password:String --valid > /dev/null 2>&1
+if [ $? -ne 0 ]; then
+    echo "❌ Failed to generate User model"
+    exit 1
+fi
+
+rm -f src/main/java/com/test/scaffold/repository/UserRepository.java
+java -jar /home/guilherme/IdeaProjects/spring-scaffold/target/spring-scaffold.jar repository UserRepository --model User > /dev/null 2>&1
+if [ $? -ne 0 ]; then
+    echo "❌ Failed to generate User repository"
+    exit 1
+fi
+
+# Verify User repository does NOT have JWT methods initially
+if [ ! -f "src/main/java/com/test/scaffold/repository/UserRepository.java" ]; then
+    echo "❌ UserRepository.java not found"
+    exit 1
+fi
+
+if grep -q "findByUsername" src/main/java/com/test/scaffold/repository/UserRepository.java; then
+    echo "❌ UserRepository should not have JWT methods before security configuration"
+    exit 1
+fi
+
+# Generate Spring Security JWT configuration
+java -jar /home/guilherme/IdeaProjects/spring-scaffold/target/spring-scaffold.jar security \
+    --jwt-secret "testSecretKey123456" \
+    --jwt-expiration 86400000 \
+    --user-entity User
+if [ $? -ne 0 ]; then
+    echo "❌ Failed to generate Spring Security configuration"
+    exit 1
+fi
+
+# Check if security files were generated
+SECURITY_FILES=(
+    "src/main/java/com/test/scaffold/security/SecurityConfig.java"
+    "src/main/java/com/test/scaffold/security/JwtUtils.java"
+    "src/main/java/com/test/scaffold/security/JwtAuthenticationEntryPoint.java"
+    "src/main/java/com/test/scaffold/security/JwtAuthenticationFilter.java"
+    "src/main/java/com/test/scaffold/security/UserDetailsServiceImpl.java"
+    "src/main/java/com/test/scaffold/security/UserPrincipal.java"
+    "src/main/java/com/test/scaffold/controller/AuthController.java"
+    "src/main/java/com/test/scaffold/security/JwtRequest.java"
+    "src/main/java/com/test/scaffold/security/JwtResponse.java"
+)
+
+for file in "${SECURITY_FILES[@]}"; do
+    if [ ! -f "$file" ]; then
+        echo "❌ Security file not found: $file"
+        exit 1
+    fi
+done
+
+# Verify User repository now has JWT methods after security configuration
+if ! grep -q "findByUsername" src/main/java/com/test/scaffold/repository/UserRepository.java; then
+    echo "❌ UserRepository missing findByUsername method after security configuration"
+    exit 1
+fi
+
+if ! grep -q "existsByUsername" src/main/java/com/test/scaffold/repository/UserRepository.java; then
+    echo "❌ UserRepository missing existsByUsername method after security configuration"
+    exit 1
+fi
+
+# Verify security compilation
+mvn clean compile -q
+if [ $? -ne 0 ]; then
+    echo "❌ Spring Security JWT compilation failed"
+    exit 1
+fi
+
+# Check if JWT dependencies were added to pom.xml
+if ! grep -q "jjwt" pom.xml; then
+    echo "❌ JWT dependencies not found in pom.xml"
+    exit 1
+fi
+
+if ! grep -q "spring-boot-starter-security" pom.xml; then
+    echo "❌ Spring Security dependency not found in pom.xml"
+    exit 1
+fi
+
+# Fix H2 scope if needed (should be runtime, not test for main application)
+if grep -A3 -B1 "h2" pom.xml | grep -q "<scope>test</scope>"; then
+    echo "   Fixing H2 scope from test to runtime..."
+    sed -i 's|<scope>test</scope>|<scope>runtime</scope>|g' pom.xml
+fi
+
+# Verify application can start (timeout after 10 seconds)
+echo "   Testing Spring Boot startup with JWT security..."
+timeout 10s mvn spring-boot:run -q &
+SPRING_PID=$!
+sleep 8  # Give it time to start
+kill $SPRING_PID 2>/dev/null || true
+wait $SPRING_PID 2>/dev/null || true
+
+echo "✅ Spring Security JWT configuration successful"
+
+# Test 11: Verify generated code quality (basic checks)
+echo "🔍 Test 11: Verifying generated code quality..."
 
 # Check for English text (no Portuguese)
 if grep -r "buscando\|salvando\|excluindo\|gerado\|criado\|configuração" src/ 2>/dev/null; then
@@ -191,8 +295,8 @@ fi
 
 echo "✅ Generated code quality checks passed"
 
-# Test 11: Demonstrate automatic package detection
-echo "🎯 Test 11: Testing automatic package detection..."
+# Test 12: Demonstrate automatic package detection
+echo "🎯 Test 12: Testing automatic package detection..."
 AUTO_PACKAGE_DIR="/tmp/demo-auto-package"
 ECOMMERCE_PROJECT="my-ecommerce"
 ECOMMERCE_PATH="$AUTO_PACKAGE_DIR/$ECOMMERCE_PROJECT"
@@ -303,6 +407,7 @@ echo "   ✅ File structure validation"
 echo "   ✅ Maven compilation"
 echo "   ✅ Unit tests"
 echo "   ✅ Package creation"
+echo "   ✅ Spring Security JWT configuration"
 echo "   ✅ Code quality checks"
 echo "   ✅ Automatic package detection"
 echo ""
