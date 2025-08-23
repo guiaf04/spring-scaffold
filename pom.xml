@@ -25,7 +25,7 @@
     <developers>
         <developer>
             <id>guiaf04</id>
-            <name>Guilherme Almeida</name>
+            <name>Guilherme Araujo</name>
             <email>guiaf04@gmail.com</email>
             <url>https://github.com/guiaf04</url>
             <roles>
@@ -249,7 +249,8 @@
                 <version>2.2.0</version>
                 <configuration>
                     <licenseName>mit</licenseName>
-                    <copyrightOwners>Guilherme Almeida</copyrightOwners>
+                    <organizationName>Guilherme Araujo</organizationName>
+                    <copyrightOwners>Guilherme Araujo</copyrightOwners>
                     <processStartTag>========================LICENSE_START=================================</processStartTag>
                     <processEndTag>=========================LICENSE_END==================================</processEndTag>
                 </configuration>
@@ -262,6 +263,10 @@
                 <version>8.4.0</version>
                 <configuration>
                     <failBuildOnCVSS>7</failBuildOnCVSS>
+                    <!-- Desabilitar updates automáticos para evitar problemas de conectividade -->
+                    <autoUpdate>false</autoUpdate>
+                    <!-- Usar dados locais existentes -->
+                    <cveValidForHours>0</cveValidForHours>
                     <suppressionFiles>
                         <suppressionFile>owasp-suppressions.xml</suppressionFile>
                     </suppressionFiles>

@@ -19,9 +19,6 @@ import java.util.Optional;
 public interface {{repositoryName}} extends {{baseType}}<{{modelName}}, {{idType}}> {
 
 {{#includeCustomQueries}}
-    @Query("SELECT m FROM {{modelName}} m WHERE LOWER(m.name) LIKE LOWER(CONCAT('%', :name, '%'))")
-    List<{{modelName}}> findByNameContainingIgnoreCase(@Param("name") String name);
-
     @Query("SELECT m FROM {{modelName}} m ORDER BY m.id DESC")
     List<{{modelName}}> findAllOrderByIdDesc();
 
@@ -29,9 +26,6 @@ public interface {{repositoryName}} extends {{baseType}}<{{modelName}}, {{idType
     Long countAll();
 
     {{#includePagination}}
-    @Query("SELECT m FROM {{modelName}} m WHERE LOWER(m.name) LIKE LOWER(CONCAT('%', :name, '%'))")
-    Page<{{modelName}}> findByNameContainingIgnoreCase(@Param("name") String name, Pageable pageable);
-
     @Query("SELECT m FROM {{modelName}} m ORDER BY m.id DESC")
     Page<{{modelName}}> findAllOrderByIdDesc(Pageable pageable);
     {{/includePagination}}
