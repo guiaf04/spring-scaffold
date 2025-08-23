@@ -257,35 +257,17 @@
             </plugin>
 
             <!-- OWASP Dependency Check Plugin -->
-            <plugin>
-                <groupId>org.owasp</groupId>
-                <artifactId>dependency-check-maven</artifactId>
-                <version>8.4.0</version>
-                <configuration>
-                    <failBuildOnCVSS>7</failBuildOnCVSS>
-                    <!-- Permitir download inicial da base de dados -->
-                    <autoUpdate>true</autoUpdate>
-                    <!-- Usar dados por até 24 horas para evitar updates frequentes -->
-                    <cveValidForHours>24</cveValidForHours>
-                    <!-- Configurar timeout para evitar problemas de conectividade -->
-                    <connectionTimeout>30000</connectionTimeout>
-                    <readTimeout>60000</readTimeout>
-                    <suppressionFiles>
-                        <suppressionFile>owasp-suppressions.xml</suppressionFile>
-                    </suppressionFiles>
-                    <formats>
-                        <format>HTML</format>
-                        <format>JSON</format>
-                    </formats>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+            			<plugin>
+				<groupId>org.owasp</groupId>
+				<artifactId>dependency-check-maven</artifactId>
+				<version>12.1.0</version>
+				<configuration>
+					<autoUpdate>true</autoUpdate>
+					<nvdValidForHours>24</nvdValidForHours>
+					<connectionTimeout>60000</connectionTimeout>
+					<readTimeout>60000</readTimeout>
+				</configuration>
+			</plugin>
         </plugins>
     </build>
 

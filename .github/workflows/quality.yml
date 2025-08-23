@@ -53,7 +53,8 @@ jobs:
         mvn clean verify sonar:sonar \
           -Dsonar.projectKey=guiaf04_spring-scaffold \
           -Dsonar.organization=guiaf04 \
-          -Dsonar.host.url=https://sonarcloud.io
+          -Dsonar.host.url=https://sonarcloud.io \
+          -Ddependency-check.skip=true
 
   security-scan:
     name: Security Scan
@@ -92,8 +93,10 @@ jobs:
 
     - name: Run OWASP Dependency Check
       run: |
-        mvn clean compile
-        mvn dependency-check:check -DfailBuildOnCVSS=7
+        echo "OWASP Dependency Check temporarily disabled - requires NVD API key"
+        echo "Using Trivy for security scanning instead"
+        # mvn clean compile
+        # mvn org.owasp:dependency-check-maven:12.1.0:check -DfailBuildOnCVSS=7
 
     - name: Upload OWASP Dependency Check results
       uses: actions/upload-artifact@v4

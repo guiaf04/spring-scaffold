@@ -39,6 +39,7 @@ jobs:
     - name: Generate test report
       uses: dorny/test-reporter@v1
       if: success() || failure()
+      continue-on-error: true  # Don't fail the workflow if test reporter has permission issues
       with:
         name: Maven Tests (Java ${{ matrix.java-version }})
         path: target/surefire-reports/*.xml
