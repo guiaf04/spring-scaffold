@@ -36,4 +36,10 @@ public interface {{repositoryName}} extends {{baseType}}<{{modelName}}, {{idType
     Page<{{modelName}}> findAllOrderByIdDesc(Pageable pageable);
     {{/includePagination}}
 {{/includeCustomQueries}}
+
+{{#isUserRepository}}
+    // JWT Authentication methods
+    Optional<{{modelName}}> findByUsername(String username);
+    Boolean existsByUsername(String username);
+{{/isUserRepository}}
 }

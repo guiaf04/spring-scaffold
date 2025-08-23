@@ -20,6 +20,7 @@ import picocli.CommandLine.Option;
         "  controller - Generate REST controllers with complete CRUD",
         "  service    - Generate service classes with interfaces",
         "  repository - Generate JPA repositories with custom queries",
+        "  security   - Generate Spring Security configuration with JWT",
         "  project    - Create complete Spring Boot projects"
     },
     subcommands = {
@@ -27,6 +28,7 @@ import picocli.CommandLine.Option;
         ControllerCommand.class,
         ServiceCommand.class,
         RepositoryCommand.class,
+        SecurityCommand.class,
         ProjectCommand.class,
         CommandLine.HelpCommand.class
     },
@@ -35,6 +37,7 @@ import picocli.CommandLine.Option;
     footer = {
         "  @|yellow spring-scaffold model User -p com.example.model -f \"name:String,email:String\"|@",
         "  @|yellow spring-scaffold controller UserController -m User|@",
+        "  @|yellow spring-scaffold security --jwt-secret mySecret|@",
         "  @|yellow spring-scaffold project my-app --package com.example|@",
         "",
         "For more informations about a specific command:",
