@@ -50,6 +50,13 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       run: |
+        if [ -z "$SONAR_TOKEN" ]; then
+          echo "SONAR_TOKEN not set - skipping SonarQube analysis"
+          echo "To enable SonarQube:"
+          echo "1. Create project at https://sonarcloud.io"
+          echo "2. Add SONAR_TOKEN secret to repository"
+          exit 0
+        fi
         mvn clean verify sonar:sonar \
           -Dsonar.projectKey=guiaf04_spring-scaffold \
           -Dsonar.organization=guiaf04 \
@@ -95,15 +102,12 @@ jobs:
       run: |
         echo "OWASP Dependency Check temporarily disabled - requires NVD API key"
         echo "Using Trivy for security scanning instead"
+        echo "To enable OWASP:"
+        echo "1. Get NVD API key: https://nvd.nist.gov/developers/request-an-api-key"
+        echo "2. Add NVD_API_KEY secret to repository"
+        echo "3. Uncomment OWASP commands in this workflow"
         # mvn clean compile
         # mvn org.owasp:dependency-check-maven:12.1.0:check -DfailBuildOnCVSS=7
-
-    - name: Upload OWASP Dependency Check results
-      uses: actions/upload-artifact@v4
-      if: always()
-      with:
-        name: dependency-check-report
-        path: target/dependency-check-report.html
 
   license-check:
     name: License Check
