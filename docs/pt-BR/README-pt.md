@@ -1,10 +1,20 @@
 # Spring Scaffold CLI
 
-🚀 **Versão 2.1.0** - Aplicativo de linha de comando para auxiliar na construção de aplicações Java e Spring Boot, oferecendo geração automática e **funcional** de scaffold para models, controllers, services, repositories e projetos completos.
+🚀 **Versão 2.1.3** - Aplicativo de linha de comando para auxiliar na construção de aplicações Java e Spring Boot, oferecendo geração automática e **funcional** de scaffold para models, controllers, services, repositories e projetos completos.
 
-## ✨ Novidades v2.1.0
+## ✨ Novidades v2.1.3
 
-### 🎯 **Sintaxe Intuitiva e Parâmetros Posicionais**
+### 🚀 **Pipeline CI/CD e Gerenciamento de Releases**
+- **Pipeline DevOps Completo**: CI/CD automatizado com GitHub Actions
+- **Integração Maven Central**: Deploy automatizado com assinatura GPG
+- **Garantia de Qualidade**: Integração com SonarCloud e scanning de segurança
+- **Automação de Release**: Processo de release simplificado com testes automatizados
+
+### 🔧 **Experiência do Desenvolvedor Aprimorada (v2.1.2)**
+- **Documentação Melhorada**: Instruções claras de configuração para todas as integrações
+- **Melhor Configuração**: Clarity de workflow aprimorada e orientação para chaves de API
+
+### 🎯 **Sintaxe Intuitiva e Parâmetros Posicionais (v2.1.0)**
 - **Aliases curtos**: `--pkg`, `--deps`, `--entity`, `--db`, `-p`, `-m`, `-t`
 - **Parâmetros posicionais**: `spring-scaffold model User name:String email:String age:Integer`
 - **Desenvolvimento 50% mais rápido**: Menos digitação, mais produtividade

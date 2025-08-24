@@ -5,6 +5,36 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 e este projeto adere ao [Versionamento Semântico](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.3] - 2025-08-23
+
+### Fixed
+- 🔧 **Pipeline CI/CD**: Melhorado o manuseio de chaves GPG e configuração de deploy no Maven
+- 🛠️ **Workflow de Release**: Configuração aprimorada do agente GPG e gerenciamento de settings Maven
+- 📦 **Deploy**: Corrigidos problemas de assinatura GPG no processo de deploy do Maven Central
+
+## [2.1.2] - 2025-08-23
+
+### Fixed
+- 📝 **Documentação**: Atualizadas as etapas do workflow do SonarQube e OWASP Dependency Check
+- 🔑 **Configuração**: Adicionadas instruções claras para habilitar requisitos de chave de API
+- 🔧 **CI/CD**: Melhorada a clareza do workflow e orientação de configuração
+
+## [2.1.1] - 2025-08-23
+
+### Added
+- 🚀 **Pipeline CI/CD**: Implementação completa de workflows do GitHub Actions
+  - Workflow de CI com testes automatizados e relatórios de teste
+  - Workflow de qualidade com integração SonarCloud e scanning de segurança  
+  - Workflow de release com deploy no Maven Central e assinatura GPG
+- 📋 **Templates de Projeto**: Adicionados templates e configuração do GitHub
+  - Template de pull request com formato estruturado
+  - Configuração do Dependabot para atualizações automáticas de dependências
+  - Settings Maven e arquivo de licença
+
+### Fixed
+- 🔧 **Sistema de Build**: Configuração Maven aprimorada para publicação no Central
+- 📦 **Processo de Release**: Implementado pipeline adequado de assinatura GPG e deploy
+
 ## [2.1.0] - 2025-08-22
 
 ### Added

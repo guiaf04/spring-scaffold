@@ -5,7 +5,7 @@
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=guiaf04_spring-scaffold&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=guiaf04_spring-scaffold)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-🚀 **Version 2.1.0** - Command-line application to assist in building Java and Spring Boot applications, offering automatic and **functional** scaffold generation for models, controllers, services, repositories, and complete projects.
+🚀 **Version 2.1.3** - Command-line application to assist in building Java and Spring Boot applications, offering automatic and **functional** scaffold generation for models, controllers, services, repositories, and complete projects.
 
 ## 📦 Installation
 
@@ -17,7 +17,7 @@ Add to your `pom.xml`:
 <dependency>
     <groupId>io.github.guiaf04</groupId>
     <artifactId>spring-scaffold-cli</artifactId>
-    <version>2.1.0</version>
+    <version>2.1.3</version>
 </dependency>
 ```
 
@@ -33,9 +33,19 @@ mvn clean package -DskipTests
 
 Download from [GitHub Releases](https://github.com/guiaf04/spring-scaffold/releases)
 
-## ✨ What's New in v2.1.0
+## ✨ What's New in v2.1.3
 
-### 🎯 **Intuitive Syntax and Positional Parameters**
+### 🚀 **CI/CD & Release Management**
+- **Complete DevOps Pipeline**: Automated CI/CD with GitHub Actions
+- **Maven Central Integration**: Automated deployment with GPG signing
+- **Quality Assurance**: SonarCloud integration and security scanning
+- **Release Automation**: Streamlined release process with automated testing
+
+### 🔧 **Enhanced Developer Experience (v2.1.2)**
+- **Improved Documentation**: Clear setup instructions for all integrations
+- **Better Configuration**: Enhanced workflow clarity and API key guidance
+
+### 🎯 **Intuitive Syntax and Positional Parameters (v2.1.0)**
 - **Short aliases**: `--pkg`, `--deps`, `--entity`, `--db`, `-p`, `-m`, `-t`
 - **Positional parameters**: `spring-scaffold model User name:String email:String age:Integer`
 - **50% faster development**: Less typing, more productivity
@@ -406,6 +416,21 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 For support, open an issue on GitHub or contact through [email].
 
 ## 📋 Changelog
+
+### Version 2.1.3 (2025-08-23)
+- 🔧 **CI/CD Pipeline**: Enhanced GPG key handling and Maven deployment configuration
+- 🛠️ **Release Workflow**: Improved GPG agent configuration and Maven settings management
+- 📦 **Deployment**: Fixed GPG signing issues in Maven Central deployment process
+
+### Version 2.1.2 (2025-08-23)
+- 📝 **Documentation**: Updated SonarQube and OWASP Dependency Check workflow steps
+- 🔑 **Configuration**: Added clear instructions for enabling API key requirements
+- 🔧 **CI/CD**: Improved workflow clarity and configuration guidance
+
+### Version 2.1.1 (2025-08-23)
+- 🚀 **CI/CD Pipeline**: Complete GitHub Actions workflow implementation
+- 📋 **Project Templates**: Added GitHub templates and configuration
+- 🔧 **Build System**: Enhanced Maven configuration for Central publishing
 
 ### Version 2.1.0 (2025-08-22)
 - ✨ **NEW SYNTAX**: Intuitive aliases and positional parameters
