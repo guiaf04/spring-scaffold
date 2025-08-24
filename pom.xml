@@ -62,7 +62,7 @@
         <!-- Dependency versions -->
         <picocli.version>4.7.5</picocli.version>
         <mustache.version>0.9.10</mustache.version>
-        <lombok.version>1.18.30</lombok.version>
+        <lombok.version>1.18.38</lombok.version>
         <jackson.version>2.15.2</jackson.version>
         <junit.version>5.10.0</junit.version>
         <mockito.version>5.5.0</mockito.version>
