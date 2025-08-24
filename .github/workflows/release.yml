@@ -42,9 +42,34 @@ jobs:
         GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
         GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
       run: |
-        echo "$GPG_PRIVATE_KEY" | base64 --decode | gpg --batch --import
+        if [ -z "$GPG_PRIVATE_KEY" ]; then
+          echo "ERROR: GPG_PRIVATE_KEY secret is not set"
+          echo "Please configure GPG_PRIVATE_KEY and GPG_PASSPHRASE secrets"
+          exit 1
+        fi
+        
+        # Create GPG directory
+        mkdir -p ~/.gnupg
+        chmod 700 ~/.gnupg
+        
+        # Import the GPG key
+        echo "$GPG_PRIVATE_KEY" | base64 --decode | gpg --batch --quiet --import
+        
+        # Configure GPG agent
         echo "allow-loopback-pinentry" >> ~/.gnupg/gpg-agent.conf
+        echo "use-agent" >> ~/.gnupg/gpg.conf
+        echo "pinentry-mode loopback" >> ~/.gnupg/gpg.conf
+        echo "batch" >> ~/.gnupg/gpg.conf
+        
+        # Restart GPG agent
+        gpg-connect-agent reloadagent /bye || true
+        
+        # Set environment variable for Maven
         echo "MAVEN_GPG_PASSPHRASE=$GPG_PASSPHRASE" >> $GITHUB_ENV
+        
+        # Test GPG signing
+        echo "Testing GPG signing capability..."
+        echo "test" | gpg --batch --quiet --passphrase "$GPG_PASSPHRASE" --pinentry-mode loopback --detach-sign --armor
 
     - name: Configure Git user
       run: |
@@ -69,10 +94,33 @@ jobs:
         MAVEN_PASSWORD: ${{ secrets.MAVEN_CENTRAL_TOKEN }}
         MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
       run: |
+        # Create Maven settings.xml with server configurations
+        mkdir -p ~/.m2
+        cat > ~/.m2/settings.xml << EOF
+        <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
+                                      https://maven.apache.org/xsd/settings-1.0.0.xsd">
+          <servers>
+            <server>
+              <id>central</id>
+              <username>\${env.MAVEN_USERNAME}</username>
+              <password>\${env.MAVEN_PASSWORD}</password>
+            </server>
+            <server>
+              <id>gpg.passphrase</id>
+              <passphrase>\${env.MAVEN_GPG_PASSPHRASE}</passphrase>
+            </server>
+          </servers>
+        </settings>
+        EOF
+        
+        # Deploy to Maven Central
         mvn clean deploy -Prelease \
           -DskipTests=true \
           --batch-mode \
-          --show-version
+          --show-version \
+          -s ~/.m2/settings.xml
 
     - name: Create GitHub Release
       if: github.event.inputs.version
