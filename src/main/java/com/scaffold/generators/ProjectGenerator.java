@@ -69,6 +69,14 @@ public class ProjectGenerator {
             
             context.put("mainClassName", mainClassName);
             context.put("artifactId", artifactId);
+            
+            // Configure database structure for template
+            Map<String, Object> databaseConfig = new HashMap<>();
+            databaseConfig.put("H2", database == DatabaseType.H2);
+            databaseConfig.put("MYSQL", database == DatabaseType.MYSQL);
+            databaseConfig.put("POSTGRESQL", database == DatabaseType.POSTGRESQL);
+            context.put("database", databaseConfig);
+            
             Map<String, Object> dbConfig = getDatabaseConfig(database);
             context.putAll(dbConfig);
             
